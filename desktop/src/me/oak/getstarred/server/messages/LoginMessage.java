@@ -1,10 +1,9 @@
 package me.oak.getstarred.server.messages;
 
-import me.oak.getstarred.server.messages.replies.LoginReplyMessage;
 import lombok.Getter;
 import me.oak.getstarred.server.ServerContext;
 import me.oak.getstarred.server.ServerNetwork;
-import me.whiteoak.minlog.Log;
+import me.oak.getstarred.server.messages.replies.LoginReplyMessage;
 
 /**
  *
@@ -24,10 +23,9 @@ public class LoginMessage extends Message {
 
     @Override
     public void process(ServerContext context, int cID) {
-        LoginReplyMessage loginReplyMessage = new LoginReplyMessage("success", login + " was logged in.",
-                                                                    "sample");
+        LoginReplyMessage loginReplyMessage
+                          = context.getAccountManager().tryLogin(login, password_digest);
         context.getNetwork().send(ServerNetwork.GSON.toJson(loginReplyMessage), cID);
-        Log.info("server", login + " is logged in");
     }
 
 }

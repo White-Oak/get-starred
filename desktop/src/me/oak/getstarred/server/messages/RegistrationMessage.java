@@ -1,10 +1,9 @@
 package me.oak.getstarred.server.messages;
 
-import me.oak.getstarred.server.messages.replies.RegistrationReplyMessage;
 import lombok.Getter;
 import me.oak.getstarred.server.ServerContext;
 import me.oak.getstarred.server.ServerNetwork;
-import me.whiteoak.minlog.Log;
+import me.oak.getstarred.server.messages.replies.RegistrationReplyMessage;
 
 /**
  *
@@ -23,9 +22,10 @@ import me.whiteoak.minlog.Log;
 
     @Override
     public void process(ServerContext context, int cID) {
-	RegistrationReplyMessage registrationReplyMessage = new RegistrationReplyMessage("success", login + " was registered");
+
+        RegistrationReplyMessage registrationReplyMessage
+                                 = context.getAccountManager().tryRegister(login, password_digest);
 	context.getNetwork().send(ServerNetwork.GSON.toJson(registrationReplyMessage), cID);
-        Log.info("server", login + " is registered");
     }
 
 }

@@ -1,7 +1,5 @@
 package me.oak.getstarred.server.messages;
 
-import me.oak.getstarred.server.messages.replies.RegistrationReplyMessage;
-import me.oak.getstarred.server.messages.replies.LoginReplyMessage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.server.ServerContext;
@@ -24,12 +22,16 @@ import me.oak.getstarred.server.ServerNetwork;
         switch (type1) {
             case REGISTRATION_REQ:
                 return RegistrationMessage.class;
-            case REGISTRATION_REQ_REPLY:
-                return RegistrationReplyMessage.class;
             case LOGIN_REQ:
                 return LoginMessage.class;
-            case LOGIN_REQ_REPLY:
-                return LoginReplyMessage.class;
+            case DECKS_REQ:
+                return DecksRequestMessage.class;
+            case FINDING_MATCH:
+                return FindingMatchMessage.class;
+            case NEW_DECK:
+                return NewDeckMessage.class;
+            case READY_TO_FIGHT:
+                return ReadyTFMessage.class;
             default:
                 return Message.class;
         }

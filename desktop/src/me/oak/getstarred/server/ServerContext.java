@@ -9,4 +9,5 @@ import lombok.Getter;
 public class ServerContext {
 
     @Getter private final ServerNetwork network = new ServerNetwork(this);
+    @Getter private final AccountManager accountManager = new AccountManager();
 }
