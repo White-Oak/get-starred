@@ -1,0 +1,65 @@
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+apply plugin: "java"
+
+sourceCompatibility = 1.8
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+project.ext.mainClass = "me.oak.getstarred.server.Main"
+project.ext.assetsDir = new File("../android/assets");
+
+task buildNumberino {
+    def file = file("./src/me/oak/getstarred/server/VersionCode.java")
+    def text = file.getText()
+    text = buildNumberRe(text)
+    text = versionRe(text)
+    file.write(text)
+}
+String buildNumberRe(String text){
+    def vc = incrementBuildNumber()
+    def pattern = Pattern.compile("BUILD_NUMBER = (\\d+)")
+    def matcher = pattern.matcher(text)
+    return matcher.replaceAll("BUILD_NUMBER = " + vc)
+}
+String versionRe(String text){
+    def pattern = Pattern.compile("VERSION = (.*);")
+    def matcher = pattern.matcher(text)
+    return matcher.replaceAll("VERSION = \"" + version+"\";")
+}
+int incrementBuildNumber() {
+    def versionCode = project.ext.mVersionCode
+    def file = file("./gradle.properties")
+    if (file.exists()) {
+        def pattern = Pattern.compile("buildNumber = (\\d+)")
+        def text = file.getText()
+        def matcherVersionCode = pattern.matcher(text)
+        def find = matcherVersionCode.find()
+        if (find) {
+            versionCode = Integer.parseInt(matcherVersionCode.group(1))
+	    if (project.ext.buildNumberIncremented) {
+		println(":desktop:buildNumber - already incremented build number")
+            } else {
+		def mNextVersionCode = versionCode + 1
+		def manifestContent = matcherVersionCode.replaceAll("buildNumber = " + mNextVersionCode)
+		println(":desktop:buildNumber - current buildNumber is " + versionCode);
+		println(":desktop:buildNumber - next buildNumber is " + mNextVersionCode);
+		file.write(manifestContent)
+                project.ext.buildNumberIncremented = true
+		project.ext.mVersionCode = versionCode
+	    }
+        } else appendBuildNumber(file)
+    } else appendBuildNumber(file)
+    return versionCode;
+}
+
+void appendBuildNumber(File file) {
+    def versionCode = project.ext.mVersionCode
+    file.append("\nbuildNumber = " + (versionCode + 1))
+    println(":desktop:incrementBuildNumber - current buildNumber is " + versionCode);
+    println(":desktop:incrementBuildNumber - next buildNumber is " +(versionCode + 1));
+}
+
+classes.dependsOn buildNumberino
