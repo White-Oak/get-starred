@@ -17,8 +17,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Main implements CommandLineRunner {
 
-    @Autowired UserRepository repository;
-    @Autowired SessionRepository sessionRepository;
+    public static Main main;
+    @Autowired public UserRepository repository;
+    @Autowired public SessionRepository sessionRepository;
 
     public static void main(String args[]) {
 	SpringApplication.run(Main.class, args);
@@ -26,6 +27,7 @@ public class Main implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+	main = this;
 	final User oak = new User("Oak", "1234");
 	repository.save(oak);
 	repository.save(new User("Remi", "4321"));
@@ -42,21 +44,7 @@ public class Main implements CommandLineRunner {
 	}
 	System.out.println();
 
-	System.out.println("Sessions found with findAll():");
-	System.out.println("-------------------------------");
-	for (Session user : sessionRepository.findAll()) {
-	    System.out.println(user);
-	}
-	System.out.println();
-
-	Optional<Session> findByDigest = sessionRepository.findByDigest("sample");
-
-	sessionRepository.delete(findByDigest.get());
-	System.out.println("Users found with findAll():");
-	System.out.println("-------------------------------");
-	for (User user : repository.findAll()) {
-	    System.out.println(user);
-	}
-	System.out.println();
+	Optional<User> findByLogin = repository.findByLogin("Oak");
+	findByLogin.ifPresent(System.out::println);
     }
 }

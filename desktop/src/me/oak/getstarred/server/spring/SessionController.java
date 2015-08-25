@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
  * @author White Oak
  */
 @RestController
-@RequestMapping(name = "/session")
+@RequestMapping(name = "/sessions/")
 public class SessionController {
 
     @RequestMapping(method = RequestMethod.POST)
