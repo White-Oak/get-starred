@@ -31,7 +31,8 @@ public class Main implements CommandLineRunner {
 
 	LocalDateTime of = LocalDateTime.now().plusMonths(1);
 	Date out = Date.from(of.atZone(ZoneId.systemDefault()).toInstant());
-	sessionRepository.save(new Session(oak, "sample", out));
+	final Session session = new Session(oak, "sample", out);
+	sessionRepository.save(session);
 
 	System.out.println("Users found with findAll():");
 	System.out.println("-------------------------------");

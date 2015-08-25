@@ -19,6 +19,7 @@ public class User {
     private int id;
     private String login;
     private String password_digest;
+    @OneToOne(mappedBy = "user") private Session currentSession;
 
     public User(String login, String password_digest) {
 	this.login = login;

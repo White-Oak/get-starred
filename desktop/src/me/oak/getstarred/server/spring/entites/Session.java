@@ -10,7 +10,6 @@ import lombok.*;
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
 @Getter
 @Setter
 @Table(indexes = {@Index(columnList = "digest", unique = true)})
@@ -32,4 +31,10 @@ public class Session {
 	this.digest = digest;
 	this.expiresTimestamp = expiresTimestamp;
     }
+
+    @Override
+    public String toString() {
+	return "Session{" + "id=" + id + ", digest=" + digest + ", expiresTimestamp=" + expiresTimestamp + '}';
+    }
+
 }
