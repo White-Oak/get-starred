@@ -1,6 +1,5 @@
 package me.oak.getstarred.network;
 
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.ClientContext;
@@ -15,14 +14,6 @@ import me.oak.getstarred.network.messages.MessageBar;
 
     private final ClientNetwork clientNetwork = new ClientNetwork();
     private final ClientContext context;
-
-    public void connect(String IP) {
-	try {
-	    clientNetwork.connect(IP);
-	} catch (IOException | InterruptedException ex) {
-	    ex.printStackTrace();
-	}
-    }
 
     public void send(Message message) {
 	clientNetwork.send(Message.GSON.toJson(message));

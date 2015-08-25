@@ -16,8 +16,6 @@ public class DebugActor extends Actor {
 
     private final BitmapFont font;
 
-    private final int BUILD_NUMBER = 95;
-
     public DebugActor() {
 	FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("a song for jennifer.ttf"));
 	FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -32,7 +30,7 @@ public class DebugActor extends Actor {
     public void draw(Batch batch, float parentAlpha) {
 	font.setColor(Color.WHITE);
 
-	font.draw(batch, "Build " + BUILD_NUMBER, 10, 10);
+	font.draw(batch, "Build " + spaceisnear.VersionCode.BUILD_NUMBER, 10, 10);
 	font.draw(batch, Gdx.graphics.getWidth() + " x " + Gdx.graphics.getHeight(), 10, 50);
 
     }

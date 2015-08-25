@@ -15,8 +15,8 @@ public final class ClientNetwork {
     private final Queue<String> toBeProcessed = new LinkedList<>();
 
     private final Client client = new Client();
-    private final WebResource userResource = client.resource("http://localhost:8080/users");
-    private final WebResource sessionResource = client.resource("http://localhost:8080/sessions");
+    private final WebResource userResource = client.resource("http://localhost:8080/users/");
+    private final WebResource sessionResource = client.resource("http://localhost:8080/sessions/");
 
     public ClientResponse register(String login, String password) {
 	MultivaluedMap formData = new MultivaluedMapImpl();
