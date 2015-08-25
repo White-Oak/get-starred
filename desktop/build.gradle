@@ -4,10 +4,32 @@ apply plugin: 'spring-boot'
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+ext {
+    buildNumberIncremented = false
+    mBuildNumber = 31
+    mVersion = '0.0.1'
+    mainClass = "me.oak.getstarred.server.Main"
+}
 
-project.ext.mainClass = "me.oak.getstarred.server.Main"
-project.ext.assetsDir = new File("../android/assets");
+sourceSets {
+    main {
+	java {
+	    srcDirs = [ "src/" ]
+	}
+    }
+}
+
+dependencies {        
+    compile 'org.projectlombok:lombok:1.16.6'
+    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'com.esotericsoftware:kryonet:2.22.0-RC1'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+}
+
+jar {
+    baseName = 'get-starred-server'
+    version = "${project.ext.mVersion}-b${project.ext.mBuildNumber}"
+}
 
 task versionCodeUpdate() {
     def file = file("./version.code")
@@ -26,7 +48,6 @@ task versionCodeUpdate() {
     }
     overwriteVersionCodeFile(project.ext.mBuildNumber, project.ext.mVersion)
     createVersionCodeJava(project.ext.mBuildNumber, project.ext.mVersion)
-    version = "${project.ext.mVersion}-b${project.ext.mBuildNumber}"
 }
 void createVersionCodeJava(int versionNum, String versionString){
     def file = file("/src/me/oak/getstarred/server/VersionCode.java")
