@@ -1,0 +1,21 @@
+apply plugin: "java"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+sourceSets.main.java.srcDirs = ["src/"]
+
+configurations {
+    provided
+}
+sourceSets {
+    main {
+	compileClasspath += configurations.provided
+    }
+}
+
+dependencies {        
+    compile 'com.sun.jersey:jersey-client:1.19'
+    compile 'com.sun.jersey:jersey-json:1.19'
+    provided 'org.projectlombok:lombok:1.14.8'
+    compile 'com.google.code.gson:gson:2.3.1'
+}
