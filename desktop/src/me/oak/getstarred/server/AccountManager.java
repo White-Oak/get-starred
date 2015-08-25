@@ -37,9 +37,12 @@ public class AccountManager {
 		Date out = Date.from(of.atZone(ZoneId.systemDefault()).toInstant());
 		Session session = new Session(user, login, out);
 		Main.main.sessionRepository.save(session);
+		if (user.getCurrentSession() != null) {
+		    Main.main.sessionRepository.delete(user.getCurrentSession());
+		}
 		user.setCurrentSession(session);
 		Main.main.repository.save(user);
-		Log.info("server", "New ession is stored for " + login);
+		Log.info("server", "New session is stored for " + login);
 		return new LoginReply("success", login + " was logged in", login);
 	    } else {
 		return new LoginReply("failure", "The password is incorrect");
