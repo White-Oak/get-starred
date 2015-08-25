@@ -1,17 +1,16 @@
 package me.oak.getstarred.server;
 
-import me.whiteoak.minlog.Log;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  *
  * @author White Oak
  */
+@SpringBootApplication
 public class Main {
 
     public static void main(String args[]) {
-	Log.info("server", "GetStarred server! Version: " + VersionCode.VERSION + "-b" + VersionCode.BUILD_NUMBER);
-	ServerCore serverCore = new ServerCore();
-	Thread thread = new Thread(serverCore, "Main server loop");
-	thread.start();
+	SpringApplication.run(Main.class, args);
     }
 }
