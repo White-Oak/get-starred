@@ -2,8 +2,6 @@ package me.oak.getstarred.server.messages;
 
 import lombok.Getter;
 import me.oak.getstarred.server.ServerContext;
-import me.oak.getstarred.server.ServerNetwork;
-import me.oak.getstarred.server.messages.replies.RegistrationReplyMessage;
 
 /**
  *
@@ -23,9 +21,9 @@ import me.oak.getstarred.server.messages.replies.RegistrationReplyMessage;
     @Override
     public void process(ServerContext context, int cID) {
 
-        RegistrationReplyMessage registrationReplyMessage
-                                 = context.getAccountManager().tryRegister(login, password_digest);
-	context.getNetwork().send(ServerNetwork.GSON.toJson(registrationReplyMessage), cID);
+//        RegistrationReplyMessage registrationReplyMessage
+//                                 = context.getAccountManager().tryRegister(login, password_digest);
+//	context.getNetwork().send(ServerNetwork.GSON.toJson(registrationReplyMessage), cID);
     }
 
 }

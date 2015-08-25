@@ -20,6 +20,8 @@ sourceSets {
 }
 
 dependencies {        
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'com.h2database:h2'
     compile 'org.projectlombok:lombok:1.16.6'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.esotericsoftware:kryonet:2.22.0-RC1'
