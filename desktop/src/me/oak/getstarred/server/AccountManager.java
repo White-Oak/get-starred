@@ -3,10 +3,9 @@ package me.oak.getstarred.server;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
+import java.util.Optional;
 import me.oak.getstarred.server.spring.entites.*;
-import me.oak.getstarred.server.spring.replies.LoginReply;
-import me.oak.getstarred.server.spring.replies.RegisterReply;
+import me.oak.getstarred.server.spring.replies.*;
 import me.whiteoak.minlog.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,7 +20,8 @@ public class AccountManager {
     @Autowired SessionRepository sessionRepository;
 
     public RegisterReply tryRegister(String login, String password_digest) {
-	if (repository.findByLogin(login).isEmpty()) {
+	final Optional<User> user = repository.findByLogin(login);
+	if (!user.isPresent()) {
 	    Log.info("server", login + " is registered");
 	    return new RegisterReply("success", login + " was registered");
 	} else {
@@ -30,9 +30,9 @@ public class AccountManager {
     }
 
     public LoginReply tryLogin(String login, String password_digest) {
-	final List<User> users = repository.findByLogin(login);
-	if (!users.isEmpty()) {
-	    User user = users.get(0);
+	final Optional<User> users = repository.findByLogin(login);
+	if (users.isPresent()) {
+	    User user = users.get();
 	    if (user.getPassword_digest().equals(password_digest)) {
 		Log.info("server", login + " is logged in");
 		LocalDateTime of = LocalDateTime.now().plusMonths(1);
@@ -51,4 +51,13 @@ public class AccountManager {
 	}
     }
 
+    public Reply tryLogout(String digest) {
+	Optional<Session> sessionOptional = sessionRepository.findByDigest(digest);
+	if (sessionOptional.isPresent()) {
+	    sessionRepository.delete(sessionOptional.get());
+	    return new Reply("You successfully logged out");
+	} else {
+	    return new Reply("There is no session with such a key");
+	}
+    }
 }

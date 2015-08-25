@@ -3,6 +3,7 @@ package me.oak.getstarred.server;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Optional;
 import me.oak.getstarred.server.spring.entites.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -48,5 +49,14 @@ public class Main implements CommandLineRunner {
 	}
 	System.out.println();
 
+	Optional<Session> findByDigest = sessionRepository.findByDigest("sample");
+
+	sessionRepository.delete(findByDigest.get());
+	System.out.println("Users found with findAll():");
+	System.out.println("-------------------------------");
+	for (User user : repository.findAll()) {
+	    System.out.println(user);
+	}
+	System.out.println();
     }
 }

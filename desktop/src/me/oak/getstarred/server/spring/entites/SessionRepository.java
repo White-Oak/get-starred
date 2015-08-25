@@ -1,6 +1,6 @@
 package me.oak.getstarred.server.spring.entites;
 
-import java.util.List;
+import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -9,5 +9,5 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface SessionRepository extends CrudRepository<Session, Integer> {
 
-    public List<Session> findByDigest(String digest);
+    public Optional<Session> findByDigest(String digest);
 }
