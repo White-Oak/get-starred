@@ -6,7 +6,6 @@ buildscript {
 
 allprojects {
 
-    version = '0.0.1'
     ext {
         appName = 'get-starred-server'
     }
@@ -20,7 +19,8 @@ project(":desktop") {
     apply plugin: "java"
     ext{
         buildNumberIncremented = false
-	mVersionCode = 1
+	mBuildNumber = 31
+	mVersion = '0.0.1'
     }
     configurations {
 	provided
