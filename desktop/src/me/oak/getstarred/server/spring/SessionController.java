@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(name = "/session")
 public class SessionController {
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.POST)
     public LoginReply login(@RequestParam(value = "login") String login,
 			    @RequestParam(value = "password") String password) {
 	LoginReply loginReply = AccountManager.INSTANCE.tryLogin(login, password);
