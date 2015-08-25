@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @RequestMapping(method = RequestMethod.POST)
-    public RegisterReply register(@RequestParam(value = "login", required = true) String login,
-				  @RequestParam(value = "password", required = true) String password) {
+    public RegisterReply register(@RequestParam(value = "login") String login,
+				  @RequestParam(value = "password") String password) {
 	RegisterReply registrationReply = AccountManager.INSTANCE.tryRegister(login, password);
 	return registrationReply;
     }
