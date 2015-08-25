@@ -29,9 +29,9 @@ public class Main implements CommandLineRunner {
 	repository.save(oak);
 	repository.save(new User("Remi", "4321"));
 
-	LocalDateTime of = LocalDateTime.now().plusDays(14);
+	LocalDateTime of = LocalDateTime.now().plusMonths(1);
 	Date out = Date.from(of.atZone(ZoneId.systemDefault()).toInstant());
-	sessionRepository.save(new Session(oak, "sample"));
+	sessionRepository.save(new Session(oak, "sample", out));
 
 	System.out.println("Users found with findAll():");
 	System.out.println("-------------------------------");

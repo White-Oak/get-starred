@@ -1,6 +1,6 @@
 package me.oak.getstarred.server.spring.entites;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import javax.persistence.*;
 import lombok.*;
 
@@ -20,15 +20,16 @@ public class Session {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @OneToOne
-    private User user;
+    @OneToOne private User user;
 
     private String digest;
-    private Timestamp expiresTimestamp;
 
-    public Session(User user, String digest) {
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiresTimestamp;
+
+    public Session(User user, String digest, Date expiresTimestamp) {
 	this.user = user;
 	this.digest = digest;
-//	this.expiresTime = expiresTime;
+	this.expiresTimestamp = expiresTimestamp;
     }
 }
