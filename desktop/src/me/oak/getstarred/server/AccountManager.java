@@ -40,12 +40,12 @@ public class AccountManager {
 		user.setCurrentSession(session);
 		Main.main.repository.save(user);
 		Log.info("server", "New ession is stored for " + login);
-		return new LoginReply("success", login + " was logged in.", "sample");
+		return new LoginReply("success", login + " was logged in", login);
 	    } else {
-		return new LoginReply("failure", "The password is incorrect", "sample");
+		return new LoginReply("failure", "The password is incorrect");
 	    }
 	} else {
-	    return new LoginReply("failure", "There is no user with login " + login, "sample");
+	    return new LoginReply("failure", "There is no user with login " + login);
 	}
     }
 
