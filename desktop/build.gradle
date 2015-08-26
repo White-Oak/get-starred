@@ -28,25 +28,33 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
 }
 
-task versionCodeUpdate <<{
-    def file = file("./version.code")
-    if(file.exists()){
-	file.withReader('UTF-8'){fr ->
-	    project.ext.mBuildNumber = Integer.parseInt(fr.readLine())
-	    project.ext.mVersion = fr.readLine()
-	    if(!project.ext.buildNumberIncremented){
-		project.ext.mBuildNumber++
-		project.ext.buildNumberIncremented = true
-		println(":${project.name}:versionCodeUpdate - current build number is ${mBuildNumber}")
-	    }else{
-		println(":${project.name}:versionCodeUpdate - build number has already been incremented in this build -- check your build pipeline.")
+task versionCodeUpdate {
+    def different = fileTree('src'){
+	include '**/*.java'
+	exclude '**/VersionCode.java'
+    }
+    inputs.files  different
+    outputs.file  "./src/me/oak/getstarred/server/VersionCode.java"
+    doLast{
+	def file = file("./version.code")
+	if(file.exists()){
+	    file.withReader('UTF-8'){fr ->
+		project.ext.mBuildNumber = Integer.parseInt(fr.readLine())
+		project.ext.mVersion = fr.readLine()
+		if(!project.ext.buildNumberIncremented){
+		    project.ext.mBuildNumber++
+		    project.ext.buildNumberIncremented = true
+		    println(":${project.name}:versionCodeUpdate - current build number is ${mBuildNumber}")
+		}else{
+		    println(":${project.name}:versionCodeUpdate - build number has already been incremented in this build -- check your build pipeline.")
+		}
 	    }
 	}
+	overwriteVersionCodeFile(mBuildNumber, mVersion)
+	createVersionCodeJava(mBuildNumber, mVersion)
+	jar.baseName = 'get-starred-server'
+	jar.version = "${mVersion}-b${mBuildNumber}"
     }
-    overwriteVersionCodeFile(mBuildNumber, mVersion)
-    createVersionCodeJava(mBuildNumber, mVersion)
-    jar.baseName = 'get-starred-server'
-    jar.version = "${mVersion}-b${mBuildNumber}"
 }
 
 void createVersionCodeJava(int versionNum, String versionString){
