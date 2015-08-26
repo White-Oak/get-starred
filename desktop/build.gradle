@@ -52,7 +52,7 @@ task versionCodeUpdate() {
     createVersionCodeJava(project.ext.mBuildNumber, project.ext.mVersion)
 }
 void createVersionCodeJava(int versionNum, String versionString){
-    def file = file("/src/me/oak/getstarred/server/VersionCode.java")
+    def file = file("./src/me/oak/getstarred/server/VersionCode.java")
     if(file.exists()) file.delete()
     def versionCodeJava = """\n\
 package spaceisnear;
@@ -70,7 +70,7 @@ public final class VersionCode {
     file.text = versionCodeJava
 }
 void overwriteVersionCodeFile(int num, String version){
-    def file = file("/version.code")
+    def file = file("./version.code")
     if(file.exists()){
 	file.delete()
     }
