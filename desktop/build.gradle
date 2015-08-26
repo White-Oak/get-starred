@@ -28,8 +28,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
 }
 
-
-task versionCodeUpdate() {
+task versionCodeUpdate <<{
     def file = file("./version.code")
     if(file.exists()){
 	file.withReader('UTF-8'){fr ->
@@ -46,12 +45,10 @@ task versionCodeUpdate() {
     }
     overwriteVersionCodeFile(mBuildNumber, mVersion)
     createVersionCodeJava(mBuildNumber, mVersion)
+    jar.baseName = 'get-starred-server'
+    jar.version = "${mVersion}-b${mBuildNumber}"
 }
 
-jar {
-    baseName = 'get-starred-server'
-    version = "${mVersion}-b${mBuildNumber}"
-}
 void createVersionCodeJava(int versionNum, String versionString){
     def file = file("./src/me/oak/getstarred/server/VersionCode.java")
     if(file.exists()) file.delete()
