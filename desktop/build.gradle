@@ -28,10 +28,6 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
 }
 
-jar {
-    baseName = 'get-starred-server'
-    version = "${project.ext.mVersion}-b${project.ext.mBuildNumber}"
-}
 
 task versionCodeUpdate() {
     def file = file("./version.code")
@@ -42,14 +38,19 @@ task versionCodeUpdate() {
 	    if(!project.ext.buildNumberIncremented){
 		project.ext.mBuildNumber++
 		project.ext.buildNumberIncremented = true
-		println(":${project.name}:versionCodeUpdate - current build number is ${project.ext.mBuildNumber}")
+		println(":${project.name}:versionCodeUpdate - current build number is ${mBuildNumber}")
 	    }else{
 		println(":${project.name}:versionCodeUpdate - build number has already been incremented in this build -- check your build pipeline.")
 	    }
 	}
     }
-    overwriteVersionCodeFile(project.ext.mBuildNumber, project.ext.mVersion)
-    createVersionCodeJava(project.ext.mBuildNumber, project.ext.mVersion)
+    overwriteVersionCodeFile(mBuildNumber, mVersion)
+    createVersionCodeJava(mBuildNumber, mVersion)
+}
+
+jar {
+    baseName = 'get-starred-server'
+    version = "${mVersion}-b${mBuildNumber}"
 }
 void createVersionCodeJava(int versionNum, String versionString){
     def file = file("./src/me/oak/getstarred/server/VersionCode.java")
