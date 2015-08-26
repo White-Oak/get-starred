@@ -1,10 +1,10 @@
 package me.oak.getstarred.network;
 
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.ClientContext;
 import me.oak.getstarred.network.messages.Message;
-import me.oak.getstarred.network.messages.MessageBar;
 
 /**
  *
@@ -14,20 +14,19 @@ import me.oak.getstarred.network.messages.MessageBar;
 
     private final ClientNetwork clientNetwork = new ClientNetwork();
     private final ClientContext context;
+    private final Queue<Message> queueSent = new LinkedList<>();
+    private final Queue<Message> queueReceived = new LinkedList<>();
 
     public void send(Message message) {
-	clientNetwork.send(Message.GSON.toJson(message));
+	queueSent.add(message);
     }
 
     public void sendQueued() {
-	clientNetwork.sendQueued();
+	while (!queueSent.isEmpty()) {
+	    Message msg = queueSent.poll();
+	}
     }
 
     public void processReceived() {
-	List<String> received = clientNetwork.getReceived();
-	for (String json : received) {
-	    MessageBar temp = Message.GSON.fromJson(json, MessageBar.class);
-	    Message.getMessage(json, temp.getType()).process(context);
-	}
     }
 }

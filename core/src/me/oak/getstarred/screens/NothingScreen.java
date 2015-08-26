@@ -22,10 +22,8 @@ public class NothingScreen extends ScreenImprovedGreatly implements ActivationLi
 	log.setPosition(reg.getX() + reg.getWidth() + 10, reg.getY());
 	getStage().addActor(log);
 	getStage().addActor(reg);
-    }
-
-    @Override
-    public void draw() {
+	reg.setActivationListener(this);
+	log.setActivationListener(this);
     }
 
     @Override
@@ -33,8 +31,10 @@ public class NothingScreen extends ScreenImprovedGreatly implements ActivationLi
 	Button b = (Button) actor;
 	switch (b.getLabel()) {
 	    case "Registration":
+		setScreen(new RegistrationScreen());
 		break;
 	    case "Login":
+		setScreen(new LoginScreen());
 		break;
 	}
     }

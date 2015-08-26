@@ -1,9 +1,11 @@
 package me.oak.getstarred;
 
+import me.oak.getstarred.server.replies.LoginReply;
+import me.oak.getstarred.server.replies.RegisterReply;
+import me.oak.getstarred.server.replies.Reply;
 import me.oak.getstarred.network.ClientNetwork;
 import me.oak.getstarred.network.Network;
 import me.oak.getstarred.screens.NothingScreen;
-import me.oak.getstarred.server.spring.replies.*;
 import spaceisnear.game.ui.core.Corev3;
 
 /**
