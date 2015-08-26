@@ -17,9 +17,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Main implements CommandLineRunner {
 
-    public static Main main;
-    @Autowired public UserRepository repository;
-    @Autowired public SessionRepository sessionRepository;
+    @Autowired private UserRepository repository;
+    @Autowired private SessionRepository sessionRepository;
 
     public static void main(String args[]) {
 	SpringApplication.run(Main.class, args);
@@ -27,7 +26,6 @@ public class Main implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-	main = this;
 	final User oak = new User("Oak", "1234");
 	repository.save(oak);
 	repository.save(new User("Remi", "4321"));

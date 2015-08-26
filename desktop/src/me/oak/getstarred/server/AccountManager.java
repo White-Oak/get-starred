@@ -4,21 +4,24 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
-import me.oak.getstarred.server.spring.entites.Session;
-import me.oak.getstarred.server.spring.entites.User;
+import me.oak.getstarred.server.spring.entites.*;
 import me.oak.getstarred.server.spring.replies.*;
 import me.whiteoak.minlog.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author oak
  */
+@Service
 public class AccountManager {
 
-    public final static AccountManager INSTANCE = new AccountManager();
+    @Autowired private UserRepository userRepository;
+    @Autowired private SessionRepository sessionRepository;
 
     public RegisterReply tryRegister(String login, String password_digest) {
-	final Optional<User> user = Main.main.repository.findByLogin(login);
+	final Optional<User> user = userRepository.findByLogin(login);
 	if (!user.isPresent()) {
 	    Log.info("server", login + " is registered");
 	    return new RegisterReply("success", login + " was registered");
@@ -28,7 +31,7 @@ public class AccountManager {
     }
 
     public LoginReply tryLogin(String login, String password_digest) {
-	final Optional<User> users = Main.main.repository.findByLogin(login);
+	final Optional<User> users = userRepository.findByLogin(login);
 	if (users.isPresent()) {
 	    User user = users.get();
 	    if (user.getPassword_digest().equals(password_digest)) {
@@ -36,12 +39,13 @@ public class AccountManager {
 		LocalDateTime of = LocalDateTime.now().plusMonths(1);
 		Date out = Date.from(of.atZone(ZoneId.systemDefault()).toInstant());
 		Session session = new Session(user, login, out);
-		Main.main.sessionRepository.save(session);
+		sessionRepository.save(session);
+		//deleting current session if present
 		if (user.getCurrentSession() != null) {
-		    Main.main.sessionRepository.delete(user.getCurrentSession());
+		    sessionRepository.delete(user.getCurrentSession());
 		}
 		user.setCurrentSession(session);
-		Main.main.repository.save(user);
+		userRepository.save(user);
 		Log.info("server", "New session is stored for " + login);
 		return new LoginReply("success", login + " was logged in", login);
 	    } else {
@@ -53,9 +57,9 @@ public class AccountManager {
     }
 
     public Reply tryLogout(String digest) {
-	Optional<Session> sessionOptional = Main.main.sessionRepository.findByDigest(digest);
+	Optional<Session> sessionOptional = sessionRepository.findByDigest(digest);
 	if (sessionOptional.isPresent()) {
-	    Main.main.sessionRepository.delete(sessionOptional.get());
+	    sessionRepository.delete(sessionOptional.get());
 	    return new Reply("You successfully logged out");
 	} else {
 	    return new Reply("There is no session with such a key");
