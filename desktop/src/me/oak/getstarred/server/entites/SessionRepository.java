@@ -1,4 +1,4 @@
-package me.oak.getstarred.server.spring.entites;
+package me.oak.getstarred.server.entites;
 
 import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;

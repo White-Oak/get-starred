@@ -1,11 +1,16 @@
 package me.oak.getstarred.server;
 
+import me.oak.getstarred.server.replies.Reply;
+import me.oak.getstarred.server.replies.RegisterReply;
+import me.oak.getstarred.server.replies.LoginReply;
+import me.oak.getstarred.server.entites.User;
+import me.oak.getstarred.server.entites.UserRepository;
+import me.oak.getstarred.server.entites.SessionRepository;
+import me.oak.getstarred.server.entites.Session;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
-import me.oak.getstarred.server.spring.entites.*;
-import me.oak.getstarred.server.spring.replies.*;
 import me.whiteoak.minlog.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

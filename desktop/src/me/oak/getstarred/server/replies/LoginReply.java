@@ -1,4 +1,4 @@
-package me.oak.getstarred.server.spring.replies;
+package me.oak.getstarred.server.replies;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;

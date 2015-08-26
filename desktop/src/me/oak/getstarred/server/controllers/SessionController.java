@@ -1,8 +1,8 @@
-package me.oak.getstarred.server.spring;
+package me.oak.getstarred.server.controllers;
 
 import me.oak.getstarred.server.AccountManager;
-import me.oak.getstarred.server.spring.replies.LoginReply;
-import me.oak.getstarred.server.spring.replies.Reply;
+import me.oak.getstarred.server.replies.LoginReply;
+import me.oak.getstarred.server.replies.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
