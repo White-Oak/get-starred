@@ -2,38 +2,18 @@ buildscript {
     repositories {
         mavenCentral()
     }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
 }
 
 allprojects {
 
-    version = '0.0.1'
-    ext {
-        appName = 'get-starred-server'
-    }
-
     repositories {
         mavenCentral()
-    }
-}
-
-project(":desktop") {
-    apply plugin: "java"
-    ext{
-        buildNumberIncremented = false
-	mVersionCode = 1
-    }
-    configurations {
-	provided
-    }
-    sourceSets {
-	main {
-	    compileClasspath += configurations.provided
-	}
-    }
-
-    dependencies {        
-	provided 'org.projectlombok:lombok:1.14.8'
-	compile 'com.google.code.gson:gson:2.3.1'
-	compile 'com.esotericsoftware:kryonet:2.22.0-RC1'
     }
 }
