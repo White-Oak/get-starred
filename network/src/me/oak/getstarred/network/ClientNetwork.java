@@ -1,13 +1,11 @@
 package me.oak.getstarred.network;
 
-import me.oak.getstarred.server.replies.RegisterReply;
-import me.oak.getstarred.server.replies.LoginReply;
-import me.oak.getstarred.server.replies.Reply;
 import com.google.gson.Gson;
 import com.sun.jersey.api.client.*;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import me.oak.getstarred.server.replies.*;
 import me.whiteoak.minlog.Log;
 
 /**
@@ -16,9 +14,11 @@ import me.whiteoak.minlog.Log;
  */
 public final class ClientNetwork {
 
+    private final static String BASE = "http://localhost:8080/";
+//    private final static String BASE = "http://get-starred-server-whiteoak.c9.io/";
     private final Client client = new Client();
-    private final WebResource userResource = client.resource("http://localhost:8080/users/");
-    private final WebResource sessionResource = client.resource("http://localhost:8080/sessions/");
+    private final WebResource userResource = client.resource(BASE + "users/");
+    private final WebResource sessionResource = client.resource(BASE + "sessions/");
     private final Gson gson = new Gson();
 
     public RegisterReply register(String login, String password) {
@@ -58,7 +58,7 @@ public final class ClientNetwork {
 	}
     }
 
-    public ClientResponse tryLogin(String login, String password) {
+    private ClientResponse tryLogin(String login, String password) {
 	MultivaluedMap formData = new MultivaluedMapImpl();
 	formData.add("login", login);
 	formData.add("password", password);
@@ -80,7 +80,7 @@ public final class ClientNetwork {
 	}
     }
 
-    public ClientResponse tryLogout(String digest) {
+    private ClientResponse tryLogout(String digest) {
 	return sessionResource.queryParam("digest", digest).delete(ClientResponse.class);
     }
 }

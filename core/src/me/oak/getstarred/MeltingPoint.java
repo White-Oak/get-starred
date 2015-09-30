@@ -1,9 +1,5 @@
 package me.oak.getstarred;
 
-import me.oak.getstarred.server.replies.LoginReply;
-import me.oak.getstarred.server.replies.RegisterReply;
-import me.oak.getstarred.server.replies.Reply;
-import me.oak.getstarred.network.ClientNetwork;
 import me.oak.getstarred.network.Network;
 import me.oak.getstarred.screens.NothingScreen;
 import spaceisnear.game.ui.core.Corev3;
@@ -15,15 +11,12 @@ import spaceisnear.game.ui.core.Corev3;
 public class MeltingPoint extends Corev3 {
 
     private final Network network = new Network(new ClientContext());
+    private final Engine engine;
 
     public MeltingPoint() {
-	setStartingScreen(new NothingScreen());
-	ClientNetwork clientNetwork = new ClientNetwork();
-	RegisterReply register = clientNetwork.register("Oak", "1234");
-	System.out.println(register);
-	LoginReply login = clientNetwork.login("Oak", "1234");
-	System.out.println(login);
-	Reply logout = clientNetwork.logout(login.getDigest());
-	System.out.println(logout);
+	setStartingScreen(new NothingScreen(network));
+	engine = new Engine(network, this);
+	engine.start();
     }
+
 }

@@ -1,7 +1,9 @@
 package me.oak.getstarred.screens;
 
 import com.badlogic.gdx.graphics.Color;
+import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.DebugActor;
+import me.oak.getstarred.network.Network;
 import spaceisnear.game.ui.*;
 import spaceisnear.starting.ui.ScreenImprovedGreatly;
 
@@ -9,7 +11,9 @@ import spaceisnear.starting.ui.ScreenImprovedGreatly;
  *
  * @author White Oak
  */
-public class NothingScreen extends ScreenImprovedGreatly implements ActivationListener {
+@RequiredArgsConstructor public class NothingScreen extends ScreenImprovedGreatly implements ActivationListener {
+
+    private final Network network;
 
     @Override
     public void create() {
@@ -31,10 +35,10 @@ public class NothingScreen extends ScreenImprovedGreatly implements ActivationLi
 	Button b = (Button) actor;
 	switch (b.getLabel()) {
 	    case "Registration":
-		setScreen(new RegistrationScreen());
+		setScreen(new RegistrationScreen(network));
 		break;
 	    case "Login":
-		setScreen(new LoginScreen());
+		setScreen(new LoginScreen(network));
 		break;
 	}
     }

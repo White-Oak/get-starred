@@ -1,10 +1,10 @@
 package me.oak.getstarred.network;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.ClientContext;
 import me.oak.getstarred.network.messages.Message;
+import me.oak.getstarred.server.replies.Reply;
 
 /**
  *
@@ -15,18 +15,28 @@ import me.oak.getstarred.network.messages.Message;
     private final ClientNetwork clientNetwork = new ClientNetwork();
     private final ClientContext context;
     private final Queue<Message> queueSent = new LinkedList<>();
-    private final Queue<Message> queueReceived = new LinkedList<>();
+    private final Queue<Reply> queueReceived = new LinkedList<>();
 
-    public void send(Message message) {
+    public void queue(Message message) {
 	queueSent.add(message);
     }
 
     public void sendQueued() {
 	while (!queueSent.isEmpty()) {
-	    Message msg = queueSent.poll();
+	    queueReceived.add(queueSent.poll().process(clientNetwork));
 	}
     }
 
-    public void processReceived() {
+    public Collection<Reply> processReceived() {
+	if (queueReceived.isEmpty()) {
+	    return null;
+	}
+	List<Reply> list = new LinkedList<>();
+	while (!queueReceived.isEmpty()) {
+	    final Reply poll = queueReceived.poll();
+	    System.out.println(poll);
+	    list.add(poll);
+	}
+	return list;
     }
 }

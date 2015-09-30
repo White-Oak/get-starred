@@ -23,6 +23,7 @@ public class Corev3 extends com.badlogic.gdx.Game {
     @Getter private OrthographicCamera camera;
     @Getter private Viewport viewport;
     @Setter private ScreenImprovedGreatly startingScreen;
+    @Setter private ScreenImprovedGreatly nextScreen;
     private Batch savedBatch;
 
     @Override public void create() {
@@ -57,6 +58,15 @@ public class Corev3 extends com.badlogic.gdx.Game {
 	    removeScreenImproved(removePrevious);
 	}
 	multiplexer.addProcessor(screenImproved.getStage());
+    }
+
+    @Override
+    public void render() {
+	if (nextScreen != null) {
+	    setScreenImproved(nextScreen);
+	    nextScreen = null;
+	}
+	super.render();
     }
 
     @Override

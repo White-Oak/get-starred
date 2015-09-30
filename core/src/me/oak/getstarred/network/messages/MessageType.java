@@ -6,5 +6,5 @@ package me.oak.getstarred.network.messages;
  */
 public enum MessageType {
 
-    REGISTRATION_REQ, REGISTRATION_REQ_REPLY
+    REGISTRATION_REQ, LOGIN_REQ
 }

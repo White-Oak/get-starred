@@ -2,14 +2,13 @@ package spaceisnear.game.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.*;
 
 /**
@@ -21,7 +20,6 @@ public abstract class UIElement extends Actor {
     public static final BitmapFont font;
     @Getter(AccessLevel.PROTECTED) private final static ShapeRenderer renderer = new ShapeRenderer();
     private final OrthographicCamera camera = new OrthographicCamera(1200, 600);
-    @Setter private Hoverable hoverable;
     private boolean hovered;
 
     @Getter @Setter private ActivationListener activationListener;
@@ -64,21 +62,6 @@ public abstract class UIElement extends Actor {
 	    }
 
 	});
-	new Thread() {
-	    @Override
-	    public void run() {
-		while (true) {
-		    if (hoverable != null) {
-			hoverable.hoverAnimation(hovered);
-		    }
-		    try {
-			Thread.sleep(10L);
-		    } catch (InterruptedException ex) {
-			Logger.getLogger(UIElement.class.getName()).log(Level.SEVERE, null, ex);
-		    }
-		}
-	    }
-	}.start();
     }
 
     protected void activated() {

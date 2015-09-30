@@ -5,7 +5,6 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 project.ext.mainClassName = "me.oak.getstarred.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../android/assets");
-
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath

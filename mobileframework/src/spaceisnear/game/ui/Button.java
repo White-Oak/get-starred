@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,25 +13,22 @@ import lombok.Setter;
  *
  * @author White Oak
  */
-public final class Button extends UIElement implements Hoverable {
+public final class Button extends UIElement {
 
-    @Getter @Setter private String label;
     private static final int WIDTH_PADDING = 20, HEIGHT_PADDING = 15;
+    @Getter @Setter private String label;
     private Color color = new Color(0xdce0e1ff);
     volatile private Color currentColor = color.cpy();
-    private Color finalColor = new Color(0xacb0b1ff);
-    private boolean entered = true, animation;
+
+    public Button(String label) {
+	this.label = label;
+	initOvers();
+    }
 
     @Override
     public void setColor(Color color) {
 	this.color = color;
 	currentColor = color;
-	finalColor = color.cpy().sub(new Color(0x30303000));
-    }
-
-    public Button(String label) {
-	this.label = label;
-	initOvers();
     }
 
     public void initOvers() {
@@ -43,20 +40,6 @@ public final class Button extends UIElement implements Hoverable {
 	    }
 
 	});
-	setHoverable(this);
-    }
-
-    @Override
-    public void hoverAnimation(boolean hovered) {
-	if (hovered) {
-	    if (!currentColor.equals(finalColor)) {
-		currentColor.sub(new Color(0x08080800));
-	    }
-	} else {
-	    if (!currentColor.equals(color)) {
-		currentColor.add(new Color(0x08080800));
-	    }
-	}
     }
 
     @Override

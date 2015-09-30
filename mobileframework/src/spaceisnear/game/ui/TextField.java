@@ -20,11 +20,11 @@ import static spaceisnear.game.ui.UIElement.font;
  *
  * @author White Oak
  */
-public final class TextField extends UIElement implements Hoverable {
+public final class TextField extends UIElement {
 
     private StringBuilder text = new StringBuilder();
     private int currentPosition;
-    private Color textColor;
+    private Color textColor = new Color(0x0);
     @Getter private boolean focused;
     private static final int HEIGHT_PADDING = 2;
     private static final int WIDTH_PADDING = 10;
@@ -33,25 +33,10 @@ public final class TextField extends UIElement implements Hoverable {
     private final static long DELTA_ACTED = 100L;
     private Color borderColor = new Color(0x0);
     volatile private Color currentColor = borderColor.cpy();
-    private Color finalColor = new Color(0xff);
-
-    @Override
-    public void hoverAnimation(boolean hovered) {
-	if (hovered) {
-	    if (!currentColor.equals(finalColor)) {
-		currentColor.add(new Color(0x10));
-	    }
-	} else {
-	    if (!currentColor.equals(borderColor)) {
-		currentColor.sub(new Color(0x10));
-	    }
-	}
-    }
 
     public void setBorderColor(Color color) {
 	this.borderColor = color;
 	currentColor = color;
-	finalColor = color.cpy().sub(new Color(0x30303000));
     }
 
     public TextField() {
@@ -115,7 +100,6 @@ public final class TextField extends UIElement implements Hoverable {
 	});
 	setHeight(getPrefHeight());
 	setWidth(getPrefWidth());
-	setHoverable(this);
     }
 
     public void checkKeys() {

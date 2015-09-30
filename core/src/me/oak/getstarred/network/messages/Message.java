@@ -1,8 +1,10 @@
 package me.oak.getstarred.network.messages;
 
 import com.google.gson.Gson;
-import lombok.*;
-import me.oak.getstarred.ClientContext;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import me.oak.getstarred.network.ClientNetwork;
+import me.oak.getstarred.server.replies.Reply;
 
 /**
  *
@@ -13,19 +15,5 @@ import me.oak.getstarred.ClientContext;
     public static final Gson GSON = new Gson();
     @Getter private final MessageType type;
 
-    public static Message getMessage(String json, MessageType type) {
-	Class clas = Message.class;
-	switch (type) {
-	    case REGISTRATION_REQ:
-		clas = RegistrationMessage.class;
-		break;
-	    case REGISTRATION_REQ_REPLY:
-		clas = RegistrationReplyMessage.class;
-		break;
-	}
-	return (Message) GSON.fromJson(json, clas);
-    }
-
-    public void process(ClientContext context) {
-    }
+    public abstract Reply process(ClientNetwork network);
 }

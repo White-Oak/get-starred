@@ -16,7 +16,7 @@ sourceSets {
 dependencies {        
     compile project(":network")
     compile project(':mobileframework')
-    provided 'org.projectlombok:lombok:1.14.8'
+    provided 'org.projectlombok:lombok:1.16.6'
     compile 'com.google.code.gson:gson:2.3.1'
     compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 }
