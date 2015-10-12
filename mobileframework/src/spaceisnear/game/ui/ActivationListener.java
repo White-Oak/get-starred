@@ -4,7 +4,7 @@ package spaceisnear.game.ui;
  *
  * @author White Oak
  */
-public interface ActivationListener {
+@FunctionalInterface public interface ActivationListener {
 
     public void componentActivated(UIElement actor);
 }
