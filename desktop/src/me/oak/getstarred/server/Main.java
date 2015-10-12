@@ -1,12 +1,12 @@
 package me.oak.getstarred.server;
 
-import me.oak.getstarred.server.entites.User;
-import me.oak.getstarred.server.entites.UserRepository;
-import me.oak.getstarred.server.entites.SessionRepository;
-import me.oak.getstarred.server.entites.Session;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Optional;
+import me.oak.getstarred.server.entites.*;
+import me.whiteoak.minlog.FileLogger;
+import me.whiteoak.minlog.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -23,6 +23,7 @@ public class Main implements CommandLineRunner {
     @Autowired private SessionRepository sessionRepository;
 
     public static void main(String args[]) {
+	Log.setLogger(new FileLogger());
 	SpringApplication.run(Main.class, args);
     }
 
@@ -42,6 +43,13 @@ public class Main implements CommandLineRunner {
 	for (User user : repository.findAll()) {
 	    System.out.println(user);
 	}
+	System.out.println("-------------------------------");
+	System.out.println();
+	System.out.println("Users found with login Oak:");
+	System.out.println("-------------------------------");
+	Optional<User> findByLogin = repository.findByLogin("Oak");
+	findByLogin.ifPresent(System.out::println);
+	System.out.println("-------------------------------");
 	System.out.println();
     }
 }

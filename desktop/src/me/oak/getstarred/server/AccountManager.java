@@ -1,16 +1,11 @@
 package me.oak.getstarred.server;
 
-import me.oak.getstarred.server.replies.Reply;
-import me.oak.getstarred.server.replies.RegisterReply;
-import me.oak.getstarred.server.replies.LoginReply;
-import me.oak.getstarred.server.entites.User;
-import me.oak.getstarred.server.entites.UserRepository;
-import me.oak.getstarred.server.entites.SessionRepository;
-import me.oak.getstarred.server.entites.Session;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
+import me.oak.getstarred.server.entites.*;
+import me.oak.getstarred.server.replies.*;
 import me.whiteoak.minlog.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,19 +31,19 @@ public class AccountManager {
     }
 
     public LoginReply tryLogin(String login, String password_digest) {
-	final Optional<User> users = userRepository.findByLogin(login);
-	if (users.isPresent()) {
-	    User user = users.get();
+	final Optional<User> userOpt = userRepository.findByLogin(login);
+	if (userOpt.isPresent()) {
+	    User user = userOpt.get();
 	    if (user.getPassword_digest().equals(password_digest)) {
 		Log.info("server", login + " is logged in");
-		LocalDateTime of = LocalDateTime.now().plusMonths(1);
-		Date out = Date.from(of.atZone(ZoneId.systemDefault()).toInstant());
-		Session session = new Session(user, login, out);
-		sessionRepository.save(session);
 		//deleting current session if present
 		if (user.getCurrentSession() != null) {
 		    sessionRepository.delete(user.getCurrentSession());
 		}
+		LocalDateTime of = LocalDateTime.now().plusMonths(1);
+		Date out = Date.from(of.atZone(ZoneId.systemDefault()).toInstant());
+		Session session = new Session(user, login, out);
+		sessionRepository.save(session);
 		user.setCurrentSession(session);
 		userRepository.save(user);
 		Log.info("server", "New session is stored for " + login);
