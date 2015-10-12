@@ -12,6 +12,7 @@ public class AndroidLauncher extends AndroidApplication {
 	super.onCreate(savedInstanceState);
 	AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 	config.numSamples = 2;
+	config.useImmersiveMode = true;
 	initialize(new MeltingPoint(), config);
     }
 }

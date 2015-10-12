@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.Setter;
 import me.whiteoak.minlog.Log;
+import spaceisnear.game.ui.FlashMessage;
 import spaceisnear.game.ui.UIElement;
 import spaceisnear.starting.ui.ScreenImprovedGreatly;
 
@@ -25,15 +26,21 @@ public class Corev3 extends com.badlogic.gdx.Game {
     @Setter private ScreenImprovedGreatly startingScreen;
     @Setter private ScreenImprovedGreatly nextScreen;
     private Batch savedBatch;
+    //
+    //
+    private Stage ownStage;
+    private FlashMessage flashMessage;
 
     @Override public void create() {
 	Gdx.input.setInputProcessor(multiplexer);
+
 	font = UIElement.font;
 	viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	savedBatch = new SpriteBatch();
 	camera = (OrthographicCamera) viewport.getCamera();
 	camera.setToOrtho(true);
 	savedBatch.setProjectionMatrix(camera.combined);
+	ownStage = new Stage(viewport, savedBatch);
 	if (startingScreen != null) {
 	    setScreenImproved(startingScreen);
 	}
@@ -46,11 +53,7 @@ public class Corev3 extends com.badlogic.gdx.Game {
     }
 
     public void setScreenImproved(ScreenImprovedGreatly screenImproved) {
-	ScreenImprovedGreatly removePrevious = null;
-	if (getScreen() != null) {
-	    assert getScreen() instanceof ScreenImprovedGreatly;
-	    removePrevious = (ScreenImprovedGreatly) getScreen();
-	}
+	ScreenImprovedGreatly removePrevious = getScreenImprovedGreatly();
 	screenImproved.initialize(this, savedBatch);
 	screenImproved.create();
 	super.setScreen(screenImproved);
@@ -60,6 +63,14 @@ public class Corev3 extends com.badlogic.gdx.Game {
 	multiplexer.addProcessor(screenImproved.getStage());
     }
 
+    public ScreenImprovedGreatly getScreenImprovedGreatly() {
+	if (getScreen() != null) {
+	    assert getScreen() instanceof ScreenImprovedGreatly;
+	    return (ScreenImprovedGreatly) getScreen();
+	}
+	return null;
+    }
+
     @Override
     public void render() {
 	if (nextScreen != null) {
@@ -67,6 +78,7 @@ public class Corev3 extends com.badlogic.gdx.Game {
 	    nextScreen = null;
 	}
 	super.render();
+	ownStage.draw();
     }
 
     @Override
@@ -95,4 +107,12 @@ public class Corev3 extends com.badlogic.gdx.Game {
 	}
     }
 
+    public void addFlashMessage(FlashMessage flashMessage) {
+	if (this.flashMessage != null) {
+	    this.flashMessage.remove();
+
+	}
+	this.flashMessage = flashMessage;
+	ownStage.addActor(flashMessage);
+    }
 }

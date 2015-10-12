@@ -5,8 +5,7 @@
  */
 package spaceisnear.game.ui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -14,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.*;
 import lombok.Getter;
+import lombok.Setter;
 import static spaceisnear.game.ui.UIElement.font;
 
 /**
@@ -22,48 +22,62 @@ import static spaceisnear.game.ui.UIElement.font;
  */
 public final class TextField extends UIElement {
 
+    private static final int HEIGHT_PADDING = 2;
+    private static final int WIDTH_PADDING = 10;
+    private final static long DELTA_ACTED = 100L;
+
     private StringBuilder text = new StringBuilder();
     private int currentPosition;
     private Color textColor = new Color(0x0);
     @Getter private boolean focused;
-    private static final int HEIGHT_PADDING = 2;
-    private static final int WIDTH_PADDING = 10;
     private int keycode;
     private long lastTimeActed;
-    private final static long DELTA_ACTED = 100L;
-    private Color borderColor = new Color(0x0);
-    volatile private Color currentColor = borderColor.cpy();
-
-    public void setBorderColor(Color color) {
-	this.borderColor = color;
-	currentColor = color;
-    }
+    @Setter private Color borderColor = new Color(0x0);
+    private final Color backgroundColor = new Color(0xf7f7ffdc);
+    private final com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard keyboard = new com.badlogic.gdx.scenes.scene2d.ui.TextField.DefaultOnscreenKeyboard();
+//
+    private OverflowTextField currentOverflow;
 
     public TextField() {
 	this("");
     }
 
     public TextField(CharSequence text) {
-	init();
 	this.text.append(text);
     }
 
-    private void init() {
+    @Override
+    protected void init() {
 	addListener(new InputListener() {
+
 	    @Override
 	    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-		System.out.println("EBAX!");
-		Stage stage = getStage();
-		if (stage != null) {
-		    stage.setKeyboardFocus(TextField.this);
-		}
-		int currentX = WIDTH_PADDING;
-		currentPosition = 0;
-		while (currentX < x && currentPosition < text.length()) {
-		    currentPosition++;
-		    //TODO
-		    GlyphLayout glyphLayout = new GlyphLayout(font, text.subSequence(0, currentPosition));
-		    currentX += glyphLayout.width;
+		if (currentOverflow == null) {
+		    Stage stage = getStage();
+		    if (stage != null) {
+			stage.setKeyboardFocus(TextField.this);
+//			final Application.ApplicationType type = Gdx.app.getType();
+			final Application.ApplicationType type = Application.ApplicationType.Android;
+			switch (type) {
+			    case Desktop:
+				int currentX = WIDTH_PADDING;
+				currentPosition = 0;
+				while (currentX < x && currentPosition < text.length()) {
+				    currentPosition++;
+				    //TODO
+				    GlyphLayout glyphLayout = new GlyphLayout(font, text.subSequence(0, currentPosition));
+				    currentX += glyphLayout.width;
+				}
+				break;
+			    case Android:
+				currentPosition = text.length();
+				currentOverflow = new OverflowTextField(TextField.this, keyboard);
+				stage.addActor(currentOverflow);
+				currentOverflow.addToStage(stage);
+				keyboard.show(true);
+				break;
+			}
+		    }
 		}
 		return true;
 	    }
@@ -86,7 +100,14 @@ public final class TextField extends UIElement {
 
 	    @Override
 	    public boolean keyTyped(InputEvent event, char character) {
-		if (true) {
+		System.out.println(character);
+		if (character == '\u0008') {
+		    TextField.this.keycode = Input.Keys.BACKSPACE;
+		    lastTimeActed = 0;
+		} else if (character == '\n' || character == '\r') {
+		    TextField.this.keycode = Input.Keys.ENTER;
+		    lastTimeActed = 0;
+		} else if (!Character.isIdentifierIgnorable(character)) {
 		    addCharacter(character);
 		}
 		return true;
@@ -98,20 +119,17 @@ public final class TextField extends UIElement {
 		return true;
 	    }
 	});
-	setHeight(getPrefHeight());
-	setWidth(getPrefWidth());
     }
 
-    public void checkKeys() {
+    public boolean checkKeys(int keycode) {
 	if (keycode != 0) {
 	    if (System.currentTimeMillis() - lastTimeActed > DELTA_ACTED) {
 		switch (keycode) {
 		    case Input.Keys.ENTER:
 			activated();
-			keycode = 0;
 			break;
 		    case Input.Keys.BACKSPACE:
-			removeCharacter();
+			removeLastCharacter();
 			break;
 		    case Input.Keys.LEFT:
 			currentPosition--;
@@ -125,10 +143,14 @@ public final class TextField extends UIElement {
 			    currentPosition = text.length();
 			}
 			break;
+		    default:
+			return false;
 		}
 		lastTimeActed = System.currentTimeMillis();
 	    }
+	    return true;
 	}
+	return false;
     }
 
     @Override
@@ -150,16 +172,17 @@ public final class TextField extends UIElement {
 	currentPosition++;
     }
 
-    public void removeCharacter() {
+    public void removeLastCharacter() {
 	if (currentPosition > 0) {
-	    text.deleteCharAt(currentPosition - 1);
-	    currentPosition--;
+	    text.deleteCharAt(--currentPosition);
 	}
     }
 
     @Override
     public void paint(Batch batch) {
-	checkKeys();
+	if (checkKeys(keycode)) {
+	    keycode = 0;
+	}
 	ShapeRenderer renderer = getRenderer();
 	focused = getStage().getKeyboardFocus() == this;
 	int start = 0;
@@ -178,22 +201,22 @@ public final class TextField extends UIElement {
 	    startingXText = (int) -glyphLayout.width;
 	}
 	//
-	renderer.setProjectionMatrix(batch.getProjectionMatrix());
-	renderer.begin(ShapeRenderer.ShapeType.Filled);
-	renderer.setColor(backgroundColor);
-	renderer.rect(0, 0, getWidth(), getHeight());
-	renderer.end();
-//	renderer.begin(ShapeRenderer.ShapeType.Line);
-//	renderer.setColor(Color.WHITE);
-//	renderer.rect(0, 0, getWidth(), getHeight());
-//	renderer.end();\
-	Gdx.gl.glEnable(GL20.GL_BLEND);
-	Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-	renderer.begin(ShapeRenderer.ShapeType.Line);
-	renderer.setColor(currentColor);
-	renderer.rect(0, 0, getWidth() + 1, getHeight());
-	renderer.end();
-	Gdx.gl.glDisable(GL20.GL_BLEND);
+	{
+	    Gdx.gl.glEnable(GL20.GL_BLEND);
+	    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+	    renderer.setProjectionMatrix(batch.getProjectionMatrix());
+	    renderer.begin(ShapeRenderer.ShapeType.Filled);
+	    renderer.setColor(backgroundColor);
+	    renderer.rect(0, 0, getWidth(), getHeight());
+	    renderer.end();
+	    Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+	{
+	    renderer.begin(ShapeRenderer.ShapeType.Line);
+	    renderer.setColor(borderColor);
+	    renderer.rect(0, 0, getWidth() + 1, getHeight());
+	    renderer.end();
+	}
 	//cursor
 	renderer.begin(ShapeRenderer.ShapeType.Line);
 	font.setColor(Color.BLACK);
@@ -213,17 +236,20 @@ public final class TextField extends UIElement {
     private float getWidthWithoutPaddings() {
 	return getWidth() - WIDTH_PADDING * 2;
     }
-    private final Color backgroundColor = new Color(0xecf0f1ff);
 
     public void setTextColor(Color textColor) {
 	this.textColor = textColor;
+    }
+
+    public CharSequence getCharSequence() {
+	return text;
     }
 
     public String getText() {
 	return text.toString();
     }
 
-    public void setText(String string) {
+    public void setText(CharSequence string) {
 	text = new StringBuilder(string);
 	currentPosition = text.length();
     }
@@ -232,4 +258,15 @@ public final class TextField extends UIElement {
     public void clear() {
 	text.setLength(0);
     }
+
+    @Override
+    protected void activated() {
+	super.activated();
+	System.out.println(text + "; Length: " + text.length());
+	if (currentOverflow != null) {
+	    currentOverflow.activated();
+	    currentOverflow = null;
+	}
+    }
+
 }

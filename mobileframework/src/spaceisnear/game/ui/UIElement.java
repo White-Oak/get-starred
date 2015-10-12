@@ -2,13 +2,10 @@ package spaceisnear.game.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import lombok.*;
 
 /**
@@ -20,7 +17,6 @@ public abstract class UIElement extends Actor {
     public static final BitmapFont font;
     @Getter(AccessLevel.PROTECTED) private final static ShapeRenderer renderer = new ShapeRenderer();
     private final OrthographicCamera camera = new OrthographicCamera(1200, 600);
-    private boolean hovered;
 
     @Getter @Setter private ActivationListener activationListener;
 
@@ -49,19 +45,10 @@ public abstract class UIElement extends Actor {
 	camera.setToOrtho(true);
 	camera.update();
 	renderer.setProjectionMatrix(camera.combined);
-	addListener(new ClickListener() {
+	init();
+    }
 
-	    @Override
-	    public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-		hovered = true;
-	    }
-
-	    @Override
-	    public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-		hovered = false;
-	    }
-
-	});
+    protected void init() {
     }
 
     protected void activated() {
@@ -105,4 +92,8 @@ public abstract class UIElement extends Actor {
 
     public abstract void paint(Batch batch);
 
+    protected int getLineWidth(String label) {
+	GlyphLayout glyphLayout = new GlyphLayout(font, label);
+	return (int) glyphLayout.width;
+    }
 }

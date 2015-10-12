@@ -18,7 +18,6 @@ public final class Button extends UIElement {
     private static final int WIDTH_PADDING = 20, HEIGHT_PADDING = 15;
     @Getter @Setter private String label;
     private Color color = new Color(0xdce0e1ff);
-    volatile private Color currentColor = color.cpy();
 
     public Button(String label) {
 	this.label = label;
@@ -28,7 +27,6 @@ public final class Button extends UIElement {
     @Override
     public void setColor(Color color) {
 	this.color = color;
-	currentColor = color;
     }
 
     public void initOvers() {
@@ -49,7 +47,7 @@ public final class Button extends UIElement {
 //	renderer.setColor(Color.BLACK);
 //	renderer.rect(0, 0, getWidth(), getHeight());
 //	renderer.end();
-	renderer.setColor(currentColor);
+	renderer.setColor(color);
 	renderer.begin(ShapeRenderer.ShapeType.Filled);
 	renderer.rect(0, 0, getWidth(), getHeight());
 	renderer.end();

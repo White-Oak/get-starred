@@ -1,12 +1,11 @@
 package me.oak.getstarred.network;
 
 import com.google.gson.Gson;
-import com.sun.jersey.api.client.*;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
+import java.io.IOException;
+import me.oak.getstarred.network.requests.*;
 import me.oak.getstarred.server.replies.*;
 import me.whiteoak.minlog.Log;
+import retrofit.*;
 
 /**
  *
@@ -14,73 +13,57 @@ import me.whiteoak.minlog.Log;
  */
 public final class ClientNetwork {
 
-    private final static String BASE = "http://localhost:8080/";
+    private final static String BASE = "http://localhost:8080";
 //    private final static String BASE = "http://get-starred-server-whiteoak.c9.io/";
-    private final Client client = new Client();
-    private final WebResource userResource = client.resource(BASE + "users/");
-    private final WebResource sessionResource = client.resource(BASE + "sessions/");
+    Retrofit retrofit = new Retrofit.Builder()
+	    .baseUrl(BASE)
+	    .addConverterFactory(GsonConverterFactory.create(new Gson()))
+	    .build();
     private final Gson gson = new Gson();
 
-    public RegisterReply register(String login, String password) {
+    public RegisterReply register(final String login, final String password) {
 	final String category = "[REG] ";
-	ClientResponse response = tryRegister(login, password);
-	final Response.StatusType statusInfo = response.getStatusInfo();
-	final int statusCode = statusInfo.getStatusCode();
-	Log.debug("network", category + "Status: " + statusCode + statusInfo.getReasonPhrase());
-	final String entity = response.getEntity(String.class);
-	if (statusCode == 200) {
-	    return gson.fromJson(entity, RegisterReply.class);
-	} else {
-	    Log.error("network", category + "Response didn't quite hit the mark: \n" + entity);
-	    return null;
-	}
+	final RegisterService registerService = retrofit.create(RegisterService.class);
+	final Call<RegisterReply> registerCall = registerService.register(login, password);
+	return deal(category, registerCall);
     }
 
-    private ClientResponse tryRegister(String login, String password) {
-	MultivaluedMap formData = new MultivaluedMapImpl();
-	formData.add("login", login);
-	formData.add("password", password);
-	return userResource.post(ClientResponse.class, formData);
+    private <T> T deal(String category, Call<T> call) {
+	try {
+	    final Response<T> response = call.execute();
+	    int statusCode = response.code();
+	    if (statusCode == 200) {
+		return response.body();
+	    } else {
+		logResponseError(category, response);
+	    }
+
+	} catch (IOException ex) {
+	    logIOError(category, call, ex);
+	}
+	return null;
+    }
+
+    private void logIOError(String category, Call call, Throwable ex) {
+	Log.error("network", category + "While trying to request: \n" + call, ex);
+    }
+
+    private void logResponseError(String category, Response response) {
+	Log.error("network", category + "Response didn't quite hit the mark: \n" + response.message());
     }
 
     public LoginReply login(String login, String password) {
 	final String category = "[LGI] ";
-	ClientResponse response = tryLogin(login, password);
-	final Response.StatusType statusInfo = response.getStatusInfo();
-	final int statusCode = statusInfo.getStatusCode();
-	Log.debug("network", category + "Status: " + statusCode + statusInfo.getReasonPhrase());
-	final String entity = response.getEntity(String.class);
-	if (statusCode == 200) {
-	    return gson.fromJson(entity, LoginReply.class);
-	} else {
-	    Log.error("network", category + "Response didn't quite hit the mark: \n" + entity);
-	    return null;
-	}
-    }
-
-    private ClientResponse tryLogin(String login, String password) {
-	MultivaluedMap formData = new MultivaluedMapImpl();
-	formData.add("login", login);
-	formData.add("password", password);
-	return sessionResource.post(ClientResponse.class, formData);
+	LoginService loginService = retrofit.create(LoginService.class);
+	final Call<LoginReply> call = loginService.login(login, password);
+	return deal(category, call);
     }
 
     public Reply logout(String digest) {
 	final String category = "[LGO] ";
-	ClientResponse response = tryLogout(digest);
-	final Response.StatusType statusInfo = response.getStatusInfo();
-	final int statusCode = statusInfo.getStatusCode();
-	Log.debug("network", category + "Status: " + statusCode + statusInfo.getReasonPhrase());
-	final String entity = response.getEntity(String.class);
-	if (statusCode == 200) {
-	    return gson.fromJson(entity, Reply.class);
-	} else {
-	    Log.error("network", category + "Response didn't quite hit the mark: \n" + entity);
-	    return null;
-	}
+	LogoutService logoutService = retrofit.create(LogoutService.class);
+	final Call<Reply> call = logoutService.logout(digest);
+	return deal(category, call);
     }
 
-    private ClientResponse tryLogout(String digest) {
-	return sessionResource.queryParam("digest", digest).delete(ClientResponse.class);
-    }
 }

@@ -4,7 +4,8 @@ import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.network.Network;
 import me.oak.getstarred.screens.NothingScreen;
-import me.oak.getstarred.server.replies.*;
+import me.oak.getstarred.server.replies.Reply;
+import spaceisnear.game.ui.FlashMessage;
 import spaceisnear.game.ui.core.Corev3;
 
 /**
@@ -32,11 +33,9 @@ import spaceisnear.game.ui.core.Corev3;
 	    Collection<Reply> replies = network.processReceived();
 	    if (replies != null) {
 		for (Reply reply : replies) {
-		    if (reply instanceof RegisterReply) {
-			corev3.setNextScreen(new NothingScreen(network));
-		    } else if (reply instanceof LoginReply) {
-			corev3.setNextScreen(new NothingScreen(network));
-		    }
+		    final NothingScreen nothingScreen = new NothingScreen(network);
+		    corev3.addFlashMessage(new FlashMessage(FlashMessage.Level.DEBUG, reply.toString()));
+		    corev3.setNextScreen(nothingScreen);
 		}
 	    }
 	    try {
