@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 @Getter public class FindReply extends Reply implements Statusable {
 
-    private String status;
+    private Status status;
 
     @Override
     public Type getType() {

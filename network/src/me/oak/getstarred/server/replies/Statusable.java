@@ -6,5 +6,9 @@ package me.oak.getstarred.server.replies;
  */
 public interface Statusable {
 
-    public String getStatus();
+    public Status getStatus();
+
+    public static enum Status {
+	SUCCESS, ERROR, WARNING, INFO, DEBUG
+    }
 }

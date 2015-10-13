@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @Getter public class LoginReply extends Reply implements Statusable {
 
-    private String status;
+    private Status status;
     private String digest;
 
     @Override

@@ -64,8 +64,25 @@ import spaceisnear.game.ui.core.Corev3;
     }
 
     private void flashOfStatusable(Statusable statusable) {
-	FlashMessage.Level level = statusable.getStatus().equals("success") ? FlashMessage.Level.SUCCESS : FlashMessage.Level.ERROR;
+	FlashMessage.Level level = transmute(statusable.getStatus());
 	final FlashMessage flashMessage = new FlashMessage(level, statusable.toString());
 	corev3.addFlashMessage(flashMessage);
+    }
+
+    private FlashMessage.Level transmute(Statusable.Status status) {
+	switch (status) {
+	    case DEBUG:
+		return FlashMessage.Level.DEBUG;
+	    case INFO:
+		return FlashMessage.Level.INFO;
+	    case ERROR:
+		return FlashMessage.Level.ERROR;
+	    case SUCCESS:
+		return FlashMessage.Level.SUCCESS;
+	    case WARNING:
+		return FlashMessage.Level.WARNING;
+	    default:
+		throw new AssertionError("wut");
+	}
     }
 }
