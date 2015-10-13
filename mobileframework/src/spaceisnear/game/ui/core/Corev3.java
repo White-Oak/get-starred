@@ -55,7 +55,6 @@ public class Corev3 extends com.badlogic.gdx.Game {
     public void setScreenImproved(ScreenImprovedGreatly screenImproved) {
 	ScreenImprovedGreatly removePrevious = getScreenImprovedGreatly();
 	screenImproved.initialize(this, savedBatch);
-	screenImproved.create();
 	super.setScreen(screenImproved);
 	if (removePrevious != null) {
 	    removeScreenImproved(removePrevious);
