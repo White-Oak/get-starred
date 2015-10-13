@@ -4,6 +4,7 @@ import me.oak.getstarred.server.AccountManager;
 import me.oak.getstarred.server.FindingManager;
 import me.oak.getstarred.server.entites.User;
 import me.oak.getstarred.server.replies.FindReply;
+import me.oak.getstarred.server.replies.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,6 @@ public class FindController {
 	if (user != null) {
 	    return findingManager.find(user);
 	}
-	return new FindReply("failure", "no user for this digest");
+	return new FindReply(Status.ERROR, "no user for this digest");
     }
 }

@@ -32,9 +32,9 @@ public class AccountManager {
 	final Optional<User> user = userRepository.findByLogin(login);
 	if (!user.isPresent()) {
 	    Log.info("server", login + " is registered");
-	    return new RegisterReply("success", login + " was registered");
+	    return new RegisterReply(Status.SUCCESS, login + " was registered");
 	} else {
-	    return new RegisterReply("failure", login + " is already registered");
+	    return new RegisterReply(Status.ERROR, login + " is already registered");
 	}
     }
 
@@ -55,12 +55,12 @@ public class AccountManager {
 		user.setCurrentSession(session);
 		userRepository.save(user);
 		Log.info("server", "New session is stored for " + login);
-		return new LoginReply("success", login + " was logged in", login);
+		return new LoginReply(Status.SUCCESS, login + " was logged in", login);
 	    } else {
-		return new LoginReply("failure", "The password is incorrect");
+		return new LoginReply(Status.ERROR, "The password is incorrect");
 	    }
 	} else {
-	    return new LoginReply("failure", "There is no user with login " + login);
+	    return new LoginReply(Status.ERROR, "There is no user with login " + login);
 	}
     }
 

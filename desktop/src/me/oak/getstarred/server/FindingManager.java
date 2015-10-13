@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import me.oak.getstarred.server.entites.User;
 import me.oak.getstarred.server.entites.UserRepository;
 import me.oak.getstarred.server.replies.FindReply;
+import me.oak.getstarred.server.replies.Status;
 import me.whiteoak.minlog.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,16 +22,16 @@ import org.springframework.stereotype.Service;
     public FindReply find(User user) {
 	Log.info("server", user.getLogin() + " wants to find a match");
 	if (user.isLookingForMatch()) {
-	    return new FindReply("failure", "Still waiting");
+	    return new FindReply(Status.ERROR, "Still waiting");
 	} else if (finders.isEmpty()) {
 	    finders.add(user);
 	    user.setLookingForMatch(true);
 	    userRepository.save(user);
-	    return new FindReply("failure", "You're added to a queue");
+	    return new FindReply(Status.ERROR, "You're added to a queue");
 	} else {
 	    User poll = finders.poll();
 	    poll.setLookingForMatch(false);
-	    return new FindReply("success", "Your matching is " + poll);
+	    return new FindReply(Status.SUCCESS, "Your matching is " + poll);
 	}
     }
 

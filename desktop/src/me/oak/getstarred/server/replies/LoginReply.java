@@ -9,11 +9,11 @@ import lombok.Value;
  */
 @Value @AllArgsConstructor public class LoginReply {
 
-    private final String status;
+    private final Status status;
     private final String message;
     private final String digest;
 
-    public LoginReply(String status, String message) {
+    public LoginReply(Status status, String message) {
 	this(status, message, null);
     }
 

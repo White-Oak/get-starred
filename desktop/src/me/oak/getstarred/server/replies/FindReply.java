@@ -9,6 +9,6 @@ import lombok.Value;
  */
 @Value @AllArgsConstructor public class FindReply {
 
-    private final String status;
+    private final Status status;
     private final String message;
 }
