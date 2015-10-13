@@ -1,6 +1,6 @@
 package me.oak.getstarred.network.requests;
 
-import me.oak.getstarred.server.replies.Reply;
+import me.oak.getstarred.server.replies.PlainReply;
 import retrofit.Call;
 import retrofit.http.*;
 
@@ -12,5 +12,5 @@ public interface LogoutService {
 
     @FormUrlEncoded
     @DELETE("sessions/")
-    public Call<Reply> logout(@Field("digest") String digest);
+    public Call<PlainReply> logout(@Field("digest") String digest);
 }

@@ -6,7 +6,13 @@ import lombok.Data;
  *
  * @author White Oak
  */
-@Data public class Reply {
+@Data public abstract class Reply {
 
     protected String message;
+
+    public abstract Type getType();
+
+    public static enum Type {
+	REGISTER, LOGIN, PLAIN
+    }
 }

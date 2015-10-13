@@ -13,4 +13,9 @@ import lombok.ToString;
     private String status;
     private String digest;
 
+    @Override
+    public Type getType() {
+	return Type.LOGIN;
+    }
+
 }

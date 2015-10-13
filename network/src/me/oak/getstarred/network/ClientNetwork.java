@@ -62,7 +62,7 @@ public final class ClientNetwork {
     public Reply logout(String digest) {
 	final String category = "[LGO] ";
 	LogoutService logoutService = retrofit.create(LogoutService.class);
-	final Call<Reply> call = logoutService.logout(digest);
+	final Call<PlainReply> call = logoutService.logout(digest);
 	return deal(category, call);
     }
 

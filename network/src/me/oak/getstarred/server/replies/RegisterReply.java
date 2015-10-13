@@ -12,4 +12,8 @@ import lombok.ToString;
 
     private String status;
 
+    @Override
+    public Type getType() {
+	return Type.REGISTER;
+    }
 }
