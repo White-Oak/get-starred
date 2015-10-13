@@ -3,6 +3,7 @@ package me.oak.getstarred;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.network.Network;
+import me.oak.getstarred.network.messages.FindMessage;
 import me.oak.getstarred.screens.MainMenuScreen;
 import me.oak.getstarred.screens.NothingScreen;
 import me.oak.getstarred.server.replies.*;
@@ -20,13 +21,12 @@ import spaceisnear.game.ui.core.Corev3;
     private final Corev3 corev3;
     private LoginReply loginReply;
 
+    private boolean findingMatch;
+    private long lastTimeAskedToFound;
+    private final static long TIME_BETWEEN_FINDS = 2000l;
+
     public void start() {
-	Thread thread = new Thread(new Runnable() {
-	    @Override
-	    public void run() {
-		proccessNetwork();
-	    }
-	}, "network");
+	Thread thread = new Thread(this::proccessNetwork, "network");
 	thread.start();
     }
 
@@ -50,9 +50,18 @@ import spaceisnear.game.ui.core.Corev3;
 			    corev3.setNextScreen(mainMenuScreen);
 			    break;
 			case FINDING:
-			    flashOfStatusable((Statusable) reply);
+			    final Statusable name = (Statusable) reply;
+			    flashOfStatusable(name);
+			    findingMatch = name.getStatus() == Statusable.Status.ERROR;
 			    break;
 		    }
+		}
+	    }
+	    if (findingMatch) {
+		if (System.currentTimeMillis() - lastTimeAskedToFound > TIME_BETWEEN_FINDS) {
+		    FindMessage findMessage = new FindMessage(loginReply.getDigest());
+		    network.queue(findMessage);
+		    lastTimeAskedToFound = System.currentTimeMillis();
 		}
 	    }
 	    try {
