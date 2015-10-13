@@ -2,34 +2,23 @@ package spaceisnear.game.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  *
  * @author White Oak
  */
-public final class Button extends UIElement {
+@RequiredArgsConstructor public final class Button extends UIElement {
 
     private static final int WIDTH_PADDING = 20, HEIGHT_PADDING = 15;
-    @Getter @Setter private String label;
-    private Color color = new Color(0xdce0e1ff);
-
-    public Button(String label) {
-	this.label = label;
-	initOvers();
-    }
+    @Getter private final String label;
+    @Setter private Color color = new Color(0xdce0e1ff);
 
     @Override
-    public void setColor(Color color) {
-	this.color = color;
-    }
-
-    public void initOvers() {
+    protected void init() {
 	addListener(new ClickListener() {
 
 	    @Override
@@ -59,9 +48,7 @@ public final class Button extends UIElement {
 
     @Override
     public float getPrefWidth() {
-	//TODO
-	GlyphLayout glyphLayout = new GlyphLayout(font, label);
-	return (glyphLayout.width + WIDTH_PADDING * 2);
+	return (getLineWidth(label) + WIDTH_PADDING * 2);
     }
 
     @Override
