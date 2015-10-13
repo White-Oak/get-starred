@@ -3,9 +3,11 @@ package me.oak.getstarred;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.network.Network;
+import me.oak.getstarred.screens.MainMenuScreen;
 import me.oak.getstarred.screens.NothingScreen;
 import me.oak.getstarred.server.replies.Reply;
 import me.oak.getstarred.server.replies.Statusable;
+import me.whiteoak.minlog.Log;
 import spaceisnear.game.ui.FlashMessage;
 import spaceisnear.game.ui.core.Corev3;
 
@@ -34,22 +36,31 @@ import spaceisnear.game.ui.core.Corev3;
 	    Collection<Reply> replies = network.processReceived();
 	    if (replies != null) {
 		for (Reply reply : replies) {
-		    final NothingScreen nothingScreen = new NothingScreen(network);
-		    FlashMessage.Level level = FlashMessage.Level.DEBUG;
-		    if (reply instanceof Statusable) {
-			Statusable statusable = (Statusable) reply;
-			level = statusable.getStatus().equals("success") ? FlashMessage.Level.SUCCESS : FlashMessage.Level.ERROR;
+		    switch (reply.getType()) {
+			case REGISTER:
+			    flashOfStatusable((Statusable) reply);
+			    final NothingScreen nothingScreen = new NothingScreen(network);
+			    corev3.setNextScreen(nothingScreen);
+			    break;
+			case LOGIN:
+			    flashOfStatusable((Statusable) reply);
+			    final MainMenuScreen mainMenuScreen = new MainMenuScreen();
+			    corev3.setNextScreen(mainMenuScreen);
+			    break;
 		    }
-		    final FlashMessage flashMessage = new FlashMessage(level, reply.toString());
-		    corev3.addFlashMessage(flashMessage);
-		    corev3.setNextScreen(nothingScreen);
 		}
 	    }
 	    try {
 		Thread.sleep(200L);
 	    } catch (InterruptedException ex) {
-		ex.printStackTrace();
+		Log.error("client", "While iterating through casual engine update cycle", ex);
 	    }
 	}
+    }
+
+    private void flashOfStatusable(Statusable statusable) {
+	FlashMessage.Level level = statusable.getStatus().equals("success") ? FlashMessage.Level.SUCCESS : FlashMessage.Level.ERROR;
+	final FlashMessage flashMessage = new FlashMessage(level, statusable.toString());
+	corev3.addFlashMessage(flashMessage);
     }
 }
