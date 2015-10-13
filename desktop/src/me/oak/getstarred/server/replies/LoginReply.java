@@ -12,9 +12,10 @@ import lombok.Value;
     private final Status status;
     private final String message;
     private final String digest;
+    private final int id;
 
     public LoginReply(Status status, String message) {
-	this(status, message, null);
+	this(status, message, null, -1);
     }
 
 }
