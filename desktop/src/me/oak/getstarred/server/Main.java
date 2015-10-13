@@ -1,10 +1,7 @@
 package me.oak.getstarred.server;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.Optional;
-import me.oak.getstarred.server.entites.*;
+import me.oak.getstarred.server.entites.User;
+import me.oak.getstarred.server.entites.UserRepository;
 import me.whiteoak.minlog.FileLogger;
 import me.whiteoak.minlog.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +17,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Main implements CommandLineRunner {
 
     @Autowired private UserRepository repository;
-    @Autowired private SessionRepository sessionRepository;
 
     public static void main(String args[]) {
 	Log.setLogger(new FileLogger());
@@ -33,22 +29,11 @@ public class Main implements CommandLineRunner {
 	repository.save(oak);
 	repository.save(new User("Remi", "4321"));
 
-	LocalDateTime of = LocalDateTime.now().plusMonths(1);
-	Date out = Date.from(of.atZone(ZoneId.systemDefault()).toInstant());
-	final Session session = new Session(oak, "sample", out);
-	sessionRepository.save(session);
-
 	System.out.println("Users found with findAll():");
 	System.out.println("-------------------------------");
 	for (User user : repository.findAll()) {
 	    System.out.println(user);
 	}
-	System.out.println("-------------------------------");
-	System.out.println();
-	System.out.println("Users found with login Oak:");
-	System.out.println("-------------------------------");
-	Optional<User> findByLogin = repository.findByLogin("Oak");
-	findByLogin.ifPresent(System.out::println);
 	System.out.println("-------------------------------");
 	System.out.println();
     }

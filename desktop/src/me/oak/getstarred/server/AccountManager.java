@@ -20,6 +20,14 @@ public class AccountManager {
     @Autowired private UserRepository userRepository;
     @Autowired private SessionRepository sessionRepository;
 
+    public User getUser(String digest) {
+	final Optional<Session> findByDigest = sessionRepository.findByDigest(digest);
+	if (findByDigest.isPresent()) {
+	    return findByDigest.get().getUser();
+	}
+	return null;
+    }
+
     public RegisterReply tryRegister(String login, String password_digest) {
 	final Optional<User> user = userRepository.findByLogin(login);
 	if (!user.isPresent()) {
