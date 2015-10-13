@@ -13,13 +13,12 @@ import retrofit.*;
  */
 public final class ClientNetwork {
 
-//    private final static String BASE = "http://localhost:8080";
-    private final static String BASE = "http://get-starred-server-whiteoak.c9.io/";
+    private final static String BASE = "http://localhost:8080";
+//    private final static String BASE = "http://get-starred-server-whiteoak.c9.io/";
     Retrofit retrofit = new Retrofit.Builder()
 	    .baseUrl(BASE)
 	    .addConverterFactory(GsonConverterFactory.create(new Gson()))
 	    .build();
-    private final Gson gson = new Gson();
 
     public RegisterReply register(final String login, final String password) {
 	final String category = "[REG] ";

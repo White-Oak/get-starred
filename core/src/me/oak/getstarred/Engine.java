@@ -1,5 +1,6 @@
 package me.oak.getstarred;
 
+import java.io.IOException;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.network.Network;
@@ -17,17 +18,25 @@ import spaceisnear.game.ui.core.Corev3;
  */
 @RequiredArgsConstructor public class Engine {
 
+    private final static long TIME_BETWEEN_FINDS = 2000l;
+
     private final Network network;
     private final Corev3 corev3;
     private LoginReply loginReply;
 
     private boolean findingMatch;
     private long lastTimeAskedToFound;
-    private final static long TIME_BETWEEN_FINDS = 2000l;
+
+    private final ChatClient chatClient = new ChatClient();
 
     public void start() {
 	Thread thread = new Thread(this::proccessNetwork, "network");
 	thread.start();
+	try {
+	    chatClient.connect();
+	} catch (IOException ex) {
+	    Log.error("client", "Cannot connect to chat server", ex);
+	}
     }
 
     private void proccessNetwork() {
@@ -45,6 +54,7 @@ import spaceisnear.game.ui.core.Corev3;
 			case LOGIN:
 			    flashOfStatusable((Statusable) reply);
 			    loginReply = (LoginReply) reply;
+			    chatClient.handshake(loginReply.getId());
 			    network.setDigest(loginReply.getDigest());
 			    final MainMenuScreen mainMenuScreen = new MainMenuScreen(network);
 			    corev3.setNextScreen(mainMenuScreen);

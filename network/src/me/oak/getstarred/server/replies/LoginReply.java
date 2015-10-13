@@ -11,11 +11,11 @@ import lombok.ToString;
 @Getter public class LoginReply extends Reply implements Statusable {
 
     private Status status;
+    private int id;
     private String digest;
 
     @Override
     public Type getType() {
 	return Type.LOGIN;
     }
-
 }
