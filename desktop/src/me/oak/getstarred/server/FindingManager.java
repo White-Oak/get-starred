@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 	    return new FindReply("failure", "You're added to a queue");
 	} else {
 	    User poll = finders.poll();
+	    poll.setLookingForMatch(false);
 	    return new FindReply("success", "Your matching is " + poll);
 	}
     }
