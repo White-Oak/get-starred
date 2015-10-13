@@ -18,11 +18,14 @@ import org.springframework.stereotype.Service;
 
     private final Queue<User> finders = new ConcurrentLinkedQueue<>();
     @Autowired private UserRepository userRepository;
+    @Autowired private LobbyManager lobbyManager;
 
     public FindReply find(User user) {
 	Log.info("server", user.getLogin() + " wants to find a match");
 	if (user.isLookingForMatch()) {
 	    return new FindReply(Status.ERROR, "Still waiting");
+	} else if (user.isInLobby()) {
+	    return new FindReply(Status.SUCCESS, "Other user is " + lobbyManager.getOtherUser(user));
 	} else if (finders.isEmpty()) {
 	    finders.add(user);
 	    user.setLookingForMatch(true);
@@ -31,7 +34,8 @@ import org.springframework.stereotype.Service;
 	} else {
 	    User poll = finders.poll();
 	    poll.setLookingForMatch(false);
-	    return new FindReply(Status.SUCCESS, "Your matching is " + poll);
+	    lobbyManager.createLobby(poll, user);
+	    return new FindReply(Status.SUCCESS, "Other user is " + poll);
 	}
     }
 

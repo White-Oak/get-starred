@@ -9,7 +9,6 @@ import lombok.*;
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
 @Getter
 @Setter
 public class User {
@@ -19,6 +18,7 @@ public class User {
     private int id;
     private String login;
     private boolean lookingForMatch;
+    private boolean inLobby;
     private String password_digest;
     @OneToOne(mappedBy = "user") private Session currentSession;
 
@@ -50,6 +50,11 @@ public class User {
 	    return false;
 	}
 	return true;
+    }
+
+    @Override
+    public String toString() {
+	return "User{" + "id=" + id + ", login=" + login + ", lookingForMatch=" + lookingForMatch + ", inLobby=" + inLobby + '}';
     }
 
 }
