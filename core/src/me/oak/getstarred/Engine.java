@@ -52,6 +52,9 @@ import spaceisnear.game.ui.core.Corev3;
 			case FINDING:
 			    final Statusable name = (Statusable) reply;
 			    flashOfStatusable(name);
+			    if (!findingMatch && name.getStatus() == Statusable.Status.ERROR) {
+				lastTimeAskedToFound = System.currentTimeMillis();
+			    }
 			    findingMatch = name.getStatus() == Statusable.Status.ERROR;
 			    break;
 		    }
