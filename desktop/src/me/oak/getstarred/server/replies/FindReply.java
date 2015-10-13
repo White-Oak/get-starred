@@ -7,14 +7,8 @@ import lombok.Value;
  *
  * @author White Oak
  */
-@Value @AllArgsConstructor public class LoginReply {
+@Value @AllArgsConstructor public class FindReply {
 
     private final Status status;
     private final String message;
-    private final String digest;
-
-    public LoginReply(Status status, String message) {
-	this(status, message, null);
-    }
-
 }

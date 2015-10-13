@@ -8,6 +8,6 @@ import lombok.Value;
  */
 @Value public class RegisterReply {
 
-    private final String status;
+    private final Status status;
     private final String message;
 }
