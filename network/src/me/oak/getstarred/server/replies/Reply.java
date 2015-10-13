@@ -13,6 +13,6 @@ import lombok.Data;
     public abstract Type getType();
 
     public static enum Type {
-	REGISTER, LOGIN, PLAIN
+	REGISTER, LOGIN, PLAIN, FINDING
     }
 }

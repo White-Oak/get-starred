@@ -5,8 +5,7 @@ import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.network.Network;
 import me.oak.getstarred.screens.MainMenuScreen;
 import me.oak.getstarred.screens.NothingScreen;
-import me.oak.getstarred.server.replies.Reply;
-import me.oak.getstarred.server.replies.Statusable;
+import me.oak.getstarred.server.replies.*;
 import me.whiteoak.minlog.Log;
 import spaceisnear.game.ui.FlashMessage;
 import spaceisnear.game.ui.core.Corev3;
@@ -19,6 +18,7 @@ import spaceisnear.game.ui.core.Corev3;
 
     private final Network network;
     private final Corev3 corev3;
+    private LoginReply loginReply;
 
     public void start() {
 	Thread thread = new Thread(new Runnable() {
@@ -44,8 +44,13 @@ import spaceisnear.game.ui.core.Corev3;
 			    break;
 			case LOGIN:
 			    flashOfStatusable((Statusable) reply);
-			    final MainMenuScreen mainMenuScreen = new MainMenuScreen();
+			    loginReply = (LoginReply) reply;
+			    network.setDigest(loginReply.getDigest());
+			    final MainMenuScreen mainMenuScreen = new MainMenuScreen(network);
 			    corev3.setNextScreen(mainMenuScreen);
+			    break;
+			case FINDING:
+			    flashOfStatusable((Statusable) reply);
 			    break;
 		    }
 		}

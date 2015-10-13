@@ -1,7 +1,7 @@
 package me.oak.getstarred.network;
 
 import java.util.*;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import me.oak.getstarred.ClientContext;
 import me.oak.getstarred.network.messages.Message;
 import me.oak.getstarred.server.replies.Reply;
@@ -16,6 +16,8 @@ import me.oak.getstarred.server.replies.Reply;
     private final ClientContext context;
     private final Queue<Message> queueSent = new LinkedList<>();
     private final Queue<Reply> queueReceived = new LinkedList<>();
+
+    @Getter @Setter private String digest;
 
     public void queue(Message message) {
 	queueSent.add(message);

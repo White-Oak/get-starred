@@ -13,8 +13,8 @@ import retrofit.*;
  */
 public final class ClientNetwork {
 
-    private final static String BASE = "http://localhost:8080";
-//    private final static String BASE = "http://get-starred-server-whiteoak.c9.io/";
+//    private final static String BASE = "http://localhost:8080";
+    private final static String BASE = "http://get-starred-server-whiteoak.c9.io/";
     Retrofit retrofit = new Retrofit.Builder()
 	    .baseUrl(BASE)
 	    .addConverterFactory(GsonConverterFactory.create(new Gson()))
@@ -56,6 +56,13 @@ public final class ClientNetwork {
 	final String category = "[LGI] ";
 	LoginService loginService = retrofit.create(LoginService.class);
 	final Call<LoginReply> call = loginService.login(login, password);
+	return deal(category, call);
+    }
+
+    public FindReply find(String digest) {
+	final String category = "[FIN] ";
+	FindingService findingService = retrofit.create(FindingService.class);
+	final Call<FindReply> call = findingService.find(digest);
 	return deal(category, call);
     }
 

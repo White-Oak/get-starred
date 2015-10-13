@@ -64,7 +64,7 @@ import lombok.RequiredArgsConstructor;
     @RequiredArgsConstructor public static enum Level {
 	DEBUG(new Color(0xafafafaf), "Debug"), INFO(new Color(0xafafffaf), "Info"),
 	SUCCESS(new Color(0xafffafaf), "Success"), WARNING(new Color(0x9fffffaf), "Warning"),
-	ERROR(new Color(0xff8f8faf), "Error");
+	ERROR(new Color(0xff8f8faf), "Failure");
 	private final Color color;
 	private final String defaultLabel;
     }
