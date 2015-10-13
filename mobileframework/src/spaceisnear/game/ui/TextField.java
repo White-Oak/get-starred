@@ -100,7 +100,7 @@ public final class TextField extends UIElement {
 
 	    @Override
 	    public boolean keyTyped(InputEvent event, char character) {
-		System.out.println(character);
+//		System.out.println(character);
 		if (character == '\u0008') {
 		    TextField.this.keycode = Input.Keys.BACKSPACE;
 		    lastTimeActed = 0;
@@ -262,7 +262,7 @@ public final class TextField extends UIElement {
     @Override
     protected void activated() {
 	super.activated();
-	System.out.println(text + "; Length: " + text.length());
+//	System.out.println(text + "; Length: " + text.length());
 	if (currentOverflow != null) {
 	    currentOverflow.activated();
 	    currentOverflow = null;
