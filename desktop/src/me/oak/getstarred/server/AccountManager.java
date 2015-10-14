@@ -55,7 +55,7 @@ public class AccountManager {
 		user.setCurrentSession(session);
 		userRepository.save(user);
 		Log.info("server", "New session is stored for " + login);
-		return new LoginReply(Status.SUCCESS, login + " was logged in", login);
+		return new LoginReply(Status.SUCCESS, login + " was logged in", login, user.getId());
 	    } else {
 		return new LoginReply(Status.ERROR, "The password is incorrect");
 	    }
