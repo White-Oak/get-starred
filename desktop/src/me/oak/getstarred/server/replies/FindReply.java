@@ -11,4 +11,12 @@ import lombok.Value;
 
     private final Status status;
     private final String message;
+    private final int userId;
+
+    public FindReply(Status status, String message) {
+	this.status = status;
+	this.message = message;
+	userId = -1;
+    }
+
 }
