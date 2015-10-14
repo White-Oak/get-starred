@@ -23,7 +23,7 @@ public abstract class UIElement extends Actor {
     public static int determineFontSize() {
 	switch (Gdx.graphics.getWidth()) {
 	    case 1920:
-		return 36;
+		return 48;
 	    case 1280:
 		return 24;
 	    default:

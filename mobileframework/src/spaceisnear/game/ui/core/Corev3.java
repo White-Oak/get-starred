@@ -10,8 +10,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.Setter;
 import me.whiteoak.minlog.Log;
-import spaceisnear.game.ui.FlashMessage;
-import spaceisnear.game.ui.UIElement;
+import spaceisnear.game.ui.*;
 import spaceisnear.starting.ui.ScreenImprovedGreatly;
 
 /**
@@ -30,6 +29,7 @@ public class Corev3 extends com.badlogic.gdx.Game {
     //
     private Stage ownStage;
     private FlashMessage flashMessage;
+    private ChatPanel chatPanel;
 
     @Override public void create() {
 	Gdx.input.setInputProcessor(multiplexer);
@@ -41,6 +41,7 @@ public class Corev3 extends com.badlogic.gdx.Game {
 	camera.setToOrtho(true);
 	savedBatch.setProjectionMatrix(camera.combined);
 	ownStage = new Stage(viewport, savedBatch);
+	multiplexer.addProcessor(ownStage);
 	if (startingScreen != null) {
 	    setScreenImproved(startingScreen);
 	}
@@ -113,5 +114,13 @@ public class Corev3 extends com.badlogic.gdx.Game {
 	}
 	this.flashMessage = flashMessage;
 	ownStage.addActor(flashMessage);
+    }
+
+    public ChatPanel createChatPanel() {
+	if (chatPanel == null) {
+	    chatPanel = new ChatPanel(ownStage);
+	    ownStage.addActor(chatPanel);
+	}
+	return chatPanel;
     }
 }

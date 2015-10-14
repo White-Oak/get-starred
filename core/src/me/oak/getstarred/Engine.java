@@ -9,8 +9,10 @@ import me.oak.getstarred.screens.MainMenuScreen;
 import me.oak.getstarred.screens.NothingScreen;
 import me.oak.getstarred.server.replies.*;
 import me.whiteoak.minlog.Log;
+import spaceisnear.game.ui.ChatPanel;
 import spaceisnear.game.ui.FlashMessage;
 import spaceisnear.game.ui.core.Corev3;
+import spaceisnear.starting.ui.ScreenImprovedGreatly;
 
 /**
  *
@@ -28,6 +30,8 @@ import spaceisnear.game.ui.core.Corev3;
     private long lastTimeAskedToFound;
 
     private final ChatClient chatClient = new ChatClient();
+    private ChatPanel chatPanel;
+    private int lobbyId;
 
     public void start() {
 	Thread thread = new Thread(this::proccessNetwork, "network");
@@ -55,6 +59,16 @@ import spaceisnear.game.ui.core.Corev3;
 			    flashOfStatusable((Statusable) reply);
 			    loginReply = (LoginReply) reply;
 			    chatClient.handshake(loginReply.getId());
+			    chatPanel = corev3.createChatPanel();
+			    chatPanel.setActivationListener(actor -> {
+				ScreenImprovedGreatly screenImprovedGreatly = corev3.getScreenImprovedGreatly();
+				System.out.println("HA " + lobbyId);
+				if (lobbyId > 0) {
+				    String text = chatPanel.getTextField().getText();
+				    chatClient.message(loginReply.getId(), lobbyId, text);
+				    System.out.println(text);
+				}
+			    });
 			    network.setDigest(loginReply.getDigest());
 			    final MainMenuScreen mainMenuScreen = new MainMenuScreen(network);
 			    corev3.setNextScreen(mainMenuScreen);
@@ -66,6 +80,10 @@ import spaceisnear.game.ui.core.Corev3;
 				lastTimeAskedToFound = System.currentTimeMillis();
 			    }
 			    findingMatch = name.getStatus() == Statusable.Status.ERROR;
+			    if (!findingMatch) {
+				FindReply fr = (FindReply) reply;
+				lobbyId = fr.getUserId();
+			    }
 			    break;
 		    }
 		}
@@ -107,4 +125,5 @@ import spaceisnear.game.ui.core.Corev3;
 		throw new AssertionError("wut");
 	}
     }
+
 }

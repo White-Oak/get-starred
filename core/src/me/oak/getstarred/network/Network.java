@@ -36,7 +36,7 @@ import me.oak.getstarred.server.replies.Reply;
 	List<Reply> list = new LinkedList<>();
 	while (!queueReceived.isEmpty()) {
 	    final Reply poll = queueReceived.poll();
-	    System.out.println(poll);
+	    System.out.println(poll.getClass() + " " + poll);
 	    list.add(poll);
 	}
 	return list;
