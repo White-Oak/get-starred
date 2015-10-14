@@ -29,6 +29,6 @@ public class ChatClient extends Listener {
 
     public void handshake(int id) {
 	Log.info("client", "Handshaking with a chat server");
-	client.sendUDP(new HandshakeMessage(id));
+	client.sendTCP(new HandshakeMessage(id));
     }
 }
