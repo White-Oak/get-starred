@@ -111,7 +111,6 @@ public class Corev3 extends com.badlogic.gdx.Game {
     public void addFlashMessage(FlashMessage flashMessage) {
 	if (this.flashMessage != null) {
 	    this.flashMessage.remove();
-
 	}
 	this.flashMessage = flashMessage;
 	ownStage.addActor(flashMessage);
@@ -119,7 +118,7 @@ public class Corev3 extends com.badlogic.gdx.Game {
 
     public ChatPanel createChatPanel() {
 	if (chatPanel == null) {
-	    chatPanel = new ChatPanel(ownStage);
+	    chatPanel = new ChatPanel();
 	    ownStage.addActor(chatPanel);
 	}
 	return chatPanel;

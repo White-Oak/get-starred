@@ -5,14 +5,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import lombok.*;
 
 /**
  *
  * @author White Oak
  */
-public abstract class UIElement extends Actor {
+public abstract class UIElement extends Group {
 
     public static final BitmapFont font;
     @Getter(AccessLevel.PROTECTED) private final static ShapeRenderer renderer = new ShapeRenderer();
@@ -83,11 +83,12 @@ public abstract class UIElement extends Actor {
 
     @Override
     public final void draw(Batch batch, float parentAlpha) {
-	batch.end();
 	renderer.translate(getX(), getY(), 0);
+	batch.end();
 	paint(batch);
-	renderer.translate(-getX(), -getY(), 0);
 	batch.begin();
+	super.draw(batch, parentAlpha);
+	renderer.translate(-getX(), -getY(), 0);
     }
 
     public abstract void paint(Batch batch);

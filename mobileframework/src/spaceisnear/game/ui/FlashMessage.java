@@ -31,9 +31,9 @@ import lombok.RequiredArgsConstructor;
     protected void init() {
 	setX((Gdx.graphics.getWidth() - getWidth()) / 2);
 	setY(-getHeight());
-	SequenceAction sequence = Actions.sequence(Actions.moveTo(getX(), Y_STARTING, 0.5f),
+	SequenceAction sequence = Actions.sequence(Actions.moveTo(getX(), Y_STARTING, 0.3f),
 		Actions.delay(3),
-		Actions.moveTo(getX(), -getHeight(), 0.5f));
+		Actions.moveTo(getX(), -getHeight(), 0.3f));
 	addAction(sequence);
     }
 
