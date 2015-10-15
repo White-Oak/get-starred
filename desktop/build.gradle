@@ -16,20 +16,34 @@ ext {
     mBuildNumber = 31
     mVersion = '0.0.1'
     mainClass = "me.oak.getstarred.server.chat.Main"
+    appName = "get-starred-chat-server"
 }
 
+configurations {
+    provided
+}
 sourceSets {
     main {
+	compileClasspath += configurations.provided
 	java {
 	    srcDirs = [ "src/" ]
 	}
     }
 }
 
+task dist(dependsOn: classes, type: Jar) {
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from { configurations.compile.collect { zipTree(it) } }
+
+    archiveName = appName + "-" + mVersion + "-b" + mBuildNumber + ".jar"
+    manifest {
+	attributes 'Main-Class': mainClass
+    }
+}
 dependencies {       
     compile 'me.whiteoak.minlog:oak-minlog:1.0.4'
-    compile 'org.projectlombok:lombok:1.16.6'
-    compile 'com.google.code.gson:gson:2.3.1'
+    provided 'org.projectlombok:lombok:1.16.6'
     compile 'com.esotericsoftware:kryonet:2.22.0-RC1'
 }
 
