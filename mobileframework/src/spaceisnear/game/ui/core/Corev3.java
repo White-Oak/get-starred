@@ -79,6 +79,7 @@ public class Corev3 extends com.badlogic.gdx.Game {
 	}
 	super.render();
 	ownStage.draw();
+	ownStage.act();
     }
 
     @Override

@@ -20,17 +20,21 @@ import lombok.*;
     private boolean hidden = true;
     @Getter private TextField textField;
     private final Stage stage;
+    private TextView textView;
 
     private void resetHidden() {
 	hidden = !hidden;
 	resetPositions();
 	if (hidden) {
 	    textField.remove();
+	    textView.remove();
 	} else {
 	    stage.addActor(textField);
+	    stage.addActor(textView);
 	    textField.setWidth(getWidth());
 	    textField.setX(getX());
 	    textField.setY(Gdx.graphics.getHeight() - textField.getHeight());
+	    textView.setBounds(getX(), getY(), getWidth(), getHeight());
 	}
     }
 
@@ -73,11 +77,17 @@ import lombok.*;
 	}
     }
 
+    public void add(CharSequence chatMessage) {
+	textView.append("\n");
+	textView.append(chatMessage);
+    }
+
     @Override
     protected void init() {
 	resetPositions();
 	textField = new TextField();
 	textField.setActivationListener(actor -> activated());
+	textView = new TextView();
 	addListener(new ClickListener() {
 	    @Override
 	    public void clicked(InputEvent event, float x, float y) {
@@ -99,6 +109,12 @@ import lombok.*;
 	renderer.rect(0, 0, getWidth(), getHeight());
 	renderer.end();
 	Gdx.gl.glDisable(GL20.GL_BLEND);
+    }
+
+    @Override
+    protected void activated() {
+	super.activated();
+	textField.clear();
     }
 
 }
