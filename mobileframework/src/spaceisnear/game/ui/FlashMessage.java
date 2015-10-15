@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.actions.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
@@ -30,16 +31,10 @@ import lombok.RequiredArgsConstructor;
     protected void init() {
 	setX((Gdx.graphics.getWidth() - getWidth()) / 2);
 	setY(-getHeight());
-	MoveToAction moveByAction = new MoveToAction();
-	moveByAction.setPosition(getX(), Y_STARTING);
-	moveByAction.setDuration(0.5f);
-	addAction(moveByAction);
-	DelayAction delayAction = new DelayAction(3);
-	MoveToAction moveByAction2 = new MoveToAction();
-	moveByAction2.setPosition(getX(), -getHeight());
-	moveByAction2.setDuration(0.5f);
-	SequenceAction sequenceAction = new SequenceAction(moveByAction, delayAction, moveByAction2);
-	addAction(sequenceAction);
+	SequenceAction sequence = Actions.sequence(Actions.moveTo(getX(), Y_STARTING, 0.5f),
+		Actions.delay(3),
+		Actions.moveTo(getX(), -getHeight(), 0.5f));
+	addAction(sequence);
     }
 
     @Override
