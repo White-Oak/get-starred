@@ -38,7 +38,7 @@ public abstract class ScreenImprovedGreatly implements ScreenImproved {
 	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	draw();
 	stage.draw();
-	stage.act();
+	stage.act(delta);
     }
 
     public void draw() {
