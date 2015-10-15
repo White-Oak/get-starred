@@ -65,11 +65,11 @@ public class ChatServer extends Listener {
 		    Client toClient = clientsMappings.get(to);
 		    if (toClient != null) {
 			Log.info("chatserver", "Message is " + chatMessage);
-			server.sendToUDP(toClient.getConnection().getID(), mm);
+			server.sendToTCP(toClient.getConnection().getID(), mm);
 		    } else {
-			Log.info("chatserver", from + " tried to chat with " + to + " but the receipnt is missing");
+			Log.info("chatserver", from + " tried to chat with " + to + " but the receipnt is missing.");
 			final ChatMessage chatMessage1 = new ChatMessage(from, from, "Sorry, but your recipient isn't logged in");
-			server.sendToUDP(connection.getID(), new MessageMessage(chatMessage1));
+			server.sendToTCP(connection.getID(), new MessageMessage(chatMessage1));
 		    }
 		}
 		break;

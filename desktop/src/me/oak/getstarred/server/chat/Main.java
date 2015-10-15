@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 	Log.setLogger(new FileLogger());
-	Log.info("chatserver", "Hi! This is a chat server for get-starred game");
+	Log.info("chatserver", "Hi! This is a chat server for get-starred game (" + VersionCode.getCode() + ")");
 	new ChatServer().host();
     }
 

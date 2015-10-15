@@ -13,7 +13,7 @@ allprojects {
 }
 ext {
     buildNumberIncremented = false
-    mBuildNumber = 31
+    mBuildNumber = 1
     mVersion = '0.0.1'
     mainClass = "me.oak.getstarred.server.chat.Main"
     appName = "get-starred-chat-server"
@@ -36,7 +36,6 @@ task dist(dependsOn: classes, type: Jar) {
     from files(sourceSets.main.output.resourcesDir)
     from { configurations.compile.collect { zipTree(it) } }
 
-    archiveName = appName + "-" + mVersion + "-b" + mBuildNumber + ".jar"
     manifest {
 	attributes 'Main-Class': mainClass
     }
@@ -80,7 +79,7 @@ void createVersionCodeJava(int versionNum, String versionString){
     def file = file("./src/me/oak/getstarred/server/chat/VersionCode.java")
     if(file.exists()) file.delete()
     def versionCodeJava = """\n\
-package me.oak.getstarred.server;
+package me.oak.getstarred.server.chat;
 
 public final class VersionCode {
 
