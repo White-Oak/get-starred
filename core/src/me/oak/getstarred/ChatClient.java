@@ -2,7 +2,8 @@ package me.oak.getstarred;
 
 import com.esotericsoftware.kryonet.*;
 import java.io.IOException;
-import java.net.Inet4Address;
+import java.net.InetAddress;
+import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.server.chat.messages.*;
 import me.whiteoak.minlog.Log;
 
@@ -10,16 +11,30 @@ import me.whiteoak.minlog.Log;
  *
  * @author White Oak
  */
-public class ChatClient extends Listener {
+@RequiredArgsConstructor public class ChatClient extends Listener {
 
     private final Client client = new Client(4096, 1024);
+    private final Engine engine;
 
-    public void connect() throws IOException {
-	client.start();
-	client.connect(5000, Inet4Address.getLocalHost(), 51446, 51447);
-	client.addListener(this);
-	registerAll();
-	Log.info("client", "Chat is connected");
+    public void connect() {
+	Thread thread = new Thread(() -> {
+	    client.start();
+	    try {
+//		client.connect(5000, InetAddress.getByName("77.244.77.10"), 51446, 51447);
+		client.connect(5000, InetAddress.getLocalHost(), 51446, 51447);
+	    } catch (IOException ex) {
+		ex.printStackTrace();
+	    }
+	    client.addListener(this);
+	    registerAll();
+	    Log.info("client", "Chat is connected");
+	}, "chat client");
+	thread.start();
+	try {
+	    thread.join();
+	} catch (InterruptedException ex) {
+	    ex.printStackTrace();
+	}
     }
 
     private void registerAll() {
@@ -35,6 +50,7 @@ public class ChatClient extends Listener {
 	if (object instanceof MessageMessage) {
 	    MessageMessage mm = (MessageMessage) object;
 	    Log.info("client", "Message is " + mm.getChatMessage());
+	    engine.addToChatPanel(mm.getChatMessage());
 	}
     }
 
@@ -51,6 +67,8 @@ public class ChatClient extends Listener {
 
     public void message(int from, int to, String message) {
 	Log.info("client", "Sending a message to  " + to);
-	client.sendUDP(new MessageMessage(new ChatMessage(from, to, message)));
+	final ChatMessage chatMessage = new ChatMessage(from, to, message);
+	engine.addToChatPanel(chatMessage);
+	client.sendUDP(new MessageMessage(chatMessage));
     }
 }

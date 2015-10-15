@@ -1,7 +1,7 @@
 apply plugin: "android"
 android {
     buildToolsVersion "23.0.1"
-    compileSdkVersion 22
+    compileSdkVersion 21
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -14,9 +14,6 @@ android {
         }
 
         instrumentTest.setRoot('tests')
-    }
-    packagingOptions {
-	exclude 'META-INF/jersey-module-version'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7

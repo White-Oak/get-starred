@@ -1,12 +1,12 @@
 package me.oak.getstarred;
 
-import java.io.IOException;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.network.Network;
 import me.oak.getstarred.network.messages.FindMessage;
 import me.oak.getstarred.screens.MainMenuScreen;
 import me.oak.getstarred.screens.NothingScreen;
+import me.oak.getstarred.server.chat.messages.ChatMessage;
 import me.oak.getstarred.server.replies.*;
 import me.whiteoak.minlog.Log;
 import spaceisnear.game.ui.ChatPanel;
@@ -29,18 +29,18 @@ import spaceisnear.starting.ui.ScreenImprovedGreatly;
     private boolean findingMatch;
     private long lastTimeAskedToFound;
 
-    private final ChatClient chatClient = new ChatClient();
+    private final ChatClient chatClient = new ChatClient(this);
     private ChatPanel chatPanel;
     private int lobbyId;
 
     public void start() {
 	Thread thread = new Thread(this::proccessNetwork, "network");
 	thread.start();
-	try {
-	    chatClient.connect();
-	} catch (IOException ex) {
-	    Log.error("client", "Cannot connect to chat server", ex);
-	}
+	chatClient.connect();
+    }
+
+    public void addToChatPanel(ChatMessage chatMessage) {
+	chatPanel.add(chatMessage.toString());
     }
 
     private void proccessNetwork() {
@@ -58,7 +58,6 @@ import spaceisnear.starting.ui.ScreenImprovedGreatly;
 			case LOGIN:
 			    flashOfStatusable((Statusable) reply);
 			    loginReply = (LoginReply) reply;
-			    chatClient.handshake(loginReply.getId());
 			    chatPanel = corev3.createChatPanel();
 			    chatPanel.setActivationListener(actor -> {
 				ScreenImprovedGreatly screenImprovedGreatly = corev3.getScreenImprovedGreatly();
@@ -69,6 +68,7 @@ import spaceisnear.starting.ui.ScreenImprovedGreatly;
 				    System.out.println(text);
 				}
 			    });
+			    chatClient.handshake(loginReply.getId());
 			    network.setDigest(loginReply.getDigest());
 			    final MainMenuScreen mainMenuScreen = new MainMenuScreen(network);
 			    corev3.setNextScreen(mainMenuScreen);
