@@ -61,15 +61,26 @@ import lombok.*;
 		MAIN_WIDTH, textField.getHeight());
 	addActor(textField);
 	addActor(textView);
-	textField.setActivationListener(actor -> activated());
-	addListener(new ClickListener() {
+	final UIElement mouseCatcher = new UIElement() {
 	    @Override
-	    public void clicked(InputEvent event, float x, float y) {
-		System.out.println("HEY");
-		resetHidden();
+	    protected void init() {
+		addListener(new ClickListener() {
+		    @Override
+		    public void clicked(InputEvent event, float x, float y) {
+			System.out.println("HEY");
+			resetHidden();
+		    }
+
+		});
 	    }
 
-	});
+	    @Override
+	    public void paint(Batch batch) {
+	    }
+	};
+	mouseCatcher.setBounds(0, 20, EXTRA_WIDTH, EXTRA_HEIGHT);
+	addActor(mouseCatcher);
+	textField.setActivationListener(actor -> activated());
     }
     private final static int EXTRA_WIDTH = Gdx.graphics.getWidth() / 20;
     private final static int EXTRA_HEIGHT = Gdx.graphics.getHeight() / 5;
