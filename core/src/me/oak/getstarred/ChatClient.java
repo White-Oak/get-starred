@@ -13,18 +13,30 @@ import me.whiteoak.minlog.Log;
  */
 @RequiredArgsConstructor public class ChatClient extends Listener {
 
+    private final static String POOL[] = {"192.168.0.17", "77.244.77.10"};
+
     private final Client client = new Client(4096, 1024);
     private final Engine engine;
+
+    private boolean connectPool(int trial) {
+	try {
+	    client.connect(5000, InetAddress.getByName(POOL[trial]), 51446, 51447);
+	    return true;
+	} catch (IOException ex) {
+	    trial++;
+	    if (trial < POOL.length) {
+		return connectPool(trial);
+	    } else {
+		Log.error("client", "Cannot connect to chat server");
+		return false;
+	    }
+	}
+    }
 
     public void connect() {
 	Thread thread = new Thread(() -> {
 	    client.start();
-	    try {
-//		client.connect(5000, InetAddress.getByName("77.244.77.10"), 51446, 51447);
-		client.connect(5000, InetAddress.getLocalHost(), 51446, 51447);
-	    } catch (IOException ex) {
-		ex.printStackTrace();
-	    }
+	    connectPool(0);
 	    client.addListener(this);
 	    registerAll();
 	    Log.info("client", "Chat is connected");
