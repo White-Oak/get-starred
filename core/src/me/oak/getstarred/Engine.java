@@ -1,12 +1,10 @@
 package me.oak.getstarred;
 
-import me.oak.getstarred.network.ChatClient;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
-import me.oak.getstarred.network.Network;
+import me.oak.getstarred.network.*;
 import me.oak.getstarred.network.messages.FindMessage;
-import me.oak.getstarred.screens.MainMenuScreen;
-import me.oak.getstarred.screens.NothingScreen;
+import me.oak.getstarred.screens.*;
 import me.oak.getstarred.server.chat.messages.ChatMessage;
 import me.oak.getstarred.server.replies.*;
 import me.whiteoak.minlog.Log;
@@ -31,7 +29,7 @@ import spaceisnear.game.ui.core.Corev3;
 
     private final ChatClient chatClient = new ChatClient(this);
     private ChatPanel chatPanel;
-    private int lobbyId;
+    private User lobbyUser;
 
     public void start() {
 	Thread thread = new Thread(this::proccessNetwork, "network");
@@ -50,44 +48,7 @@ import spaceisnear.game.ui.core.Corev3;
 	    network.sendQueued();
 	    Collection<Reply> replies = network.processReceived();
 	    if (replies != null) {
-		for (Reply reply : replies) {
-		    switch (reply.getType()) {
-			case REGISTER:
-			    flashOfStatusable((Statusable) reply);
-			    final NothingScreen nothingScreen = new NothingScreen(network);
-			    corev3.setNextScreen(nothingScreen);
-			    break;
-			case LOGIN:
-			    flashOfStatusable((Statusable) reply);
-			    loginReply = (LoginReply) reply;
-			    chatClient.handshake(loginReply.getId());
-			    network.setDigest(loginReply.getDigest());
-			    final MainMenuScreen mainMenuScreen = new MainMenuScreen(network);
-			    corev3.setNextScreen(mainMenuScreen);
-			    break;
-			case FINDING:
-			    final Statusable name = (Statusable) reply;
-			    flashOfStatusable(name);
-			    if (!findingMatch && name.getStatus() == Statusable.Status.ERROR) {
-				lastTimeAskedToFound = System.currentTimeMillis();
-			    }
-			    findingMatch = name.getStatus() == Statusable.Status.ERROR;
-			    if (!findingMatch) {
-				FindReply fr = (FindReply) reply;
-				lobbyId = fr.getUserId();
-				chatPanel = corev3.createChatPanel();
-				chatPanel.setActivationListener(actor -> {
-				    System.out.println("HA " + lobbyId);
-				    if (lobbyId > 0) {
-					String text = chatPanel.getTextField().getText();
-					chatClient.message(loginReply.getId(), lobbyId, text);
-					System.out.println(text);
-				    }
-				});
-			    }
-			    break;
-		    }
-		}
+		replies.forEach(this::processReply);
 	    }
 	    if (findingMatch) {
 		if (System.currentTimeMillis() - lastTimeAskedToFound > TIME_BETWEEN_FINDS) {
@@ -104,9 +65,51 @@ import spaceisnear.game.ui.core.Corev3;
 	}
     }
 
-    private void flashOfStatusable(Statusable statusable) {
-	FlashMessage.Level level = transmute(statusable.getStatus());
-	final FlashMessage flashMessage = new FlashMessage(level, statusable.toString());
+    public void processReply(Reply reply) {
+	flash(reply);
+	switch (reply.getType()) {
+	    case REGISTER:
+		final NothingScreen nothingScreen = new NothingScreen(network);
+		corev3.setNextScreen(nothingScreen);
+		break;
+	    case LOGIN:
+		loginReply = (LoginReply) reply;
+		chatClient.handshake(loginReply.getUser().getId());
+		network.setDigest(loginReply.getDigest());
+		final MainMenuScreen mainMenuScreen = new MainMenuScreen(network);
+		corev3.setNextScreen(mainMenuScreen);
+		break;
+	    case FINDING:
+		Statusable statusable = (Statusable) reply;
+		if (!findingMatch && statusable.getStatus() == Statusable.Status.ERROR) {
+		    lastTimeAskedToFound = System.currentTimeMillis();
+		}
+		findingMatch = statusable.getStatus() == Statusable.Status.ERROR;
+		if (!findingMatch) {
+		    FindReply fr = (FindReply) reply;
+		    lobbyUser = fr.getUser();
+		    chatPanel = corev3.createChatPanel();
+		    chatPanel.setActivationListener(actor -> {
+			if (lobbyUser.getId() > 0) {
+			    String text = chatPanel.getTextField().getText();
+			    chatClient.message(loginReply.getUser().getId(), lobbyUser.getId(), text);
+			}
+		    });
+		    LobbyScreen lobbyScreen = new LobbyScreen(loginReply.getUser(), lobbyUser);
+		    corev3.setNextScreen(lobbyScreen);
+		}
+		break;
+	}
+    }
+
+    private void flash(Reply reply) {
+	FlashMessage.Level level;
+	if (reply instanceof Statusable) {
+	    level = transmute(((Statusable) reply).getStatus());
+	} else {
+	    level = FlashMessage.Level.DEBUG;
+	}
+	final FlashMessage flashMessage = new FlashMessage(level, reply.getMessage());
 	corev3.addFlashMessage(flashMessage);
     }
 
