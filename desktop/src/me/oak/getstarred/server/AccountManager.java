@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
+import me.oak.getstarred.server.entites.User;
 import me.oak.getstarred.server.entites.*;
 import me.oak.getstarred.server.replies.*;
 import me.whiteoak.minlog.Log;
@@ -55,7 +56,7 @@ public class AccountManager {
 		user.setCurrentSession(session);
 		userRepository.save(user);
 		Log.info("server", "New session is stored for " + login);
-		return new LoginReply(Status.SUCCESS, login + " was logged in", login, user.getId());
+		return new LoginReply(Status.SUCCESS, login + " was logged in", login, user);
 	    } else {
 		return new LoginReply(Status.ERROR, "The password is incorrect");
 	    }

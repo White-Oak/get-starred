@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 	if (user.isLookingForMatch()) {
 	    return new FindReply(Status.ERROR, "Still waiting");
 	} else if (user.isInLobby()) {
-	    return new FindReply(Status.SUCCESS, "Other user is already found", lobbyManager.getOtherUser(user).getId());
+	    return new FindReply(Status.SUCCESS, "Other user is already found", lobbyManager.getOtherUser(user));
 	} else if (finders.isEmpty()) {
 	    finders.add(user);
 	    user.setLookingForMatch(true);
@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 	    User poll = finders.poll();
 	    poll.setLookingForMatch(false);
 	    lobbyManager.createLobby(poll, user);
-	    return new FindReply(Status.SUCCESS, "Other user is found", poll.getId());
+	    return new FindReply(Status.SUCCESS, "Other user is found", poll);
 	}
     }
 

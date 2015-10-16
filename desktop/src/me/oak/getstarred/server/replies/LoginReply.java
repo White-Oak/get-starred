@@ -1,21 +1,27 @@
 package me.oak.getstarred.server.replies;
 
-import lombok.AllArgsConstructor;
 import lombok.Value;
 
 /**
  *
  * @author White Oak
  */
-@Value @AllArgsConstructor public class LoginReply {
+@Value public class LoginReply {
 
     private final Status status;
     private final String message;
     private final String digest;
-    private final int id;
+    private final User user;
+
+    public LoginReply(Status status, String message, String digest, me.oak.getstarred.server.entites.User user) {
+	this.status = status;
+	this.message = message;
+	this.digest = digest;
+	this.user = User.hideUnwanted(user);
+    }
 
     public LoginReply(Status status, String message) {
-	this(status, message, null, -1);
+	this(status, message, null, null);
     }
 
 }
