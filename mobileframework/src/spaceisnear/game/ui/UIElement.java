@@ -21,13 +21,15 @@ public abstract class UIElement extends Group {
     @Getter @Setter private ActivationListener activationListener;
 
     public static int determineFontSize() {
-	switch (Gdx.graphics.getWidth()) {
-	    case 1920:
-		return 48;
-	    case 1280:
-		return 24;
-	    default:
-		return 20;
+	final int width = Gdx.graphics.getWidth();
+	if (width >= 1920) {
+	    return 50;
+	} else if (width <= 1920 && width > 1280) {
+	    return 48;
+	} else if (width <= 1280 && width > 1200) {
+	    return 24;
+	} else {
+	    return 20;
 	}
     }
 
