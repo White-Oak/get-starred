@@ -12,7 +12,6 @@ import me.whiteoak.minlog.Log;
 import spaceisnear.game.ui.ChatPanel;
 import spaceisnear.game.ui.FlashMessage;
 import spaceisnear.game.ui.core.Corev3;
-import spaceisnear.starting.ui.ScreenImprovedGreatly;
 
 /**
  *
@@ -40,7 +39,9 @@ import spaceisnear.starting.ui.ScreenImprovedGreatly;
     }
 
     public void addToChatPanel(ChatMessage chatMessage) {
-	chatPanel.add(chatMessage.toString());
+	if (chatPanel != null) {
+	    chatPanel.add(chatMessage.toString());
+	}
     }
 
     private void proccessNetwork() {
@@ -58,16 +59,6 @@ import spaceisnear.starting.ui.ScreenImprovedGreatly;
 			case LOGIN:
 			    flashOfStatusable((Statusable) reply);
 			    loginReply = (LoginReply) reply;
-			    chatPanel = corev3.createChatPanel();
-			    chatPanel.setActivationListener(actor -> {
-				ScreenImprovedGreatly screenImprovedGreatly = corev3.getScreenImprovedGreatly();
-				System.out.println("HA " + lobbyId);
-				if (lobbyId > 0) {
-				    String text = chatPanel.getTextField().getText();
-				    chatClient.message(loginReply.getId(), lobbyId, text);
-				    System.out.println(text);
-				}
-			    });
 			    chatClient.handshake(loginReply.getId());
 			    network.setDigest(loginReply.getDigest());
 			    final MainMenuScreen mainMenuScreen = new MainMenuScreen(network);
@@ -83,6 +74,15 @@ import spaceisnear.starting.ui.ScreenImprovedGreatly;
 			    if (!findingMatch) {
 				FindReply fr = (FindReply) reply;
 				lobbyId = fr.getUserId();
+				chatPanel = corev3.createChatPanel();
+				chatPanel.setActivationListener(actor -> {
+				    System.out.println("HA " + lobbyId);
+				    if (lobbyId > 0) {
+					String text = chatPanel.getTextField().getText();
+					chatClient.message(loginReply.getId(), lobbyId, text);
+					System.out.println(text);
+				    }
+				});
 			    }
 			    break;
 		    }
