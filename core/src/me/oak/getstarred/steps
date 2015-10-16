@@ -2,8 +2,12 @@
 ++Basic client networking to prove the thing is working
 ++Move server to C9
 ++Make screens for registering and logging in
--+Make flash confirmations for successfull registrtion and logging in
+++Make flash confirmations for successfull registrtion and logging in
 -+Make message boxes for failed regs and logs
--+Make app working on Android
--+Make working textfield on Android
--+Deploy version 0.0.1
+++Make app working on Android
+++Make working textfield on Android
+++Deploy version 0.1.0
+
+0.2.0
+-+Lobby screen
+-+Other user transfer from server to client

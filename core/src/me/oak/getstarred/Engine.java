@@ -1,5 +1,6 @@
 package me.oak.getstarred;
 
+import me.oak.getstarred.network.ChatClient;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.network.Network;

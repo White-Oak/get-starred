@@ -1,9 +1,10 @@
-package me.oak.getstarred;
+package me.oak.getstarred.network;
 
 import com.esotericsoftware.kryonet.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import lombok.RequiredArgsConstructor;
+import me.oak.getstarred.Engine;
 import me.oak.getstarred.server.chat.messages.*;
 import me.whiteoak.minlog.Log;
 
