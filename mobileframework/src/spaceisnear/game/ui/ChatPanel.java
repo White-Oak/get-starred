@@ -17,6 +17,12 @@ import lombok.*;
  */
 @RequiredArgsConstructor public class ChatPanel extends UIElement {
 
+    private final static int EXTRA_WIDTH = Gdx.graphics.getWidth() / 20;
+    private final static int EXTRA_HEIGHT = Gdx.graphics.getHeight() / 5;
+    private final static int MAIN_WIDTH = Gdx.graphics.getWidth() / 3;
+    private final static int MAIN_HEIGHT = Gdx.graphics.getHeight();
+    private final static int EXTRA_Y = 20;
+
     @Setter private Color backgroundColor = new Color(0x303030af);
     private boolean hidden = true;
     @Getter private TextField textField;
@@ -28,9 +34,21 @@ import lombok.*;
 	    addAction(Actions.sequence(Actions.touchable(Touchable.disabled),
 		    Actions.moveBy(MAIN_WIDTH, 0, 0.2f),
 		    Actions.touchable(Touchable.enabled)));
+	    textField.addAction(Actions.sequence(Actions.touchable(Touchable.disabled),
+		    Actions.delay(0.2f),
+		    Actions.visible(false)));
+	    textView.addAction(Actions.sequence(Actions.touchable(Touchable.disabled),
+		    Actions.delay(0.2f),
+		    Actions.visible(false)));
 	} else {
 	    addAction(Actions.sequence(Actions.touchable(Touchable.disabled),
 		    Actions.moveBy(-MAIN_WIDTH, 0, 0.2f),
+		    Actions.touchable(Touchable.enabled)));
+	    textField.addAction(Actions.sequence(Actions.visible(true),
+		    Actions.delay(0.2f),
+		    Actions.touchable(Touchable.enabled)));
+	    textView.addAction(Actions.sequence(Actions.visible(true),
+		    Actions.delay(0.2f),
 		    Actions.touchable(Touchable.enabled)));
 	}
     }
@@ -82,11 +100,6 @@ import lombok.*;
 	addActor(mouseCatcher);
 	textField.setActivationListener(actor -> activated());
     }
-    private final static int EXTRA_WIDTH = Gdx.graphics.getWidth() / 20;
-    private final static int EXTRA_HEIGHT = Gdx.graphics.getHeight() / 5;
-    private final static int MAIN_WIDTH = Gdx.graphics.getWidth() / 3;
-    private final static int MAIN_HEIGHT = Gdx.graphics.getHeight();
-    private final static int EXTRA_Y = 20;
 
     @Override
     public void paint(Batch batch) {
