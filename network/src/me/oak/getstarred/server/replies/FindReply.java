@@ -8,9 +8,8 @@ import me.oak.getstarred.network.User;
  *
  * @author White Oak
  */
-@Getter @ToString(callSuper = true) public class FindReply extends Reply implements Statusable {
+@Getter @ToString(callSuper = true) public class FindReply extends StatusReply {
 
-    private Status status;
     private User user;
 
     @Override

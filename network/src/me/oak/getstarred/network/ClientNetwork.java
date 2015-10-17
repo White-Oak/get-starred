@@ -72,4 +72,10 @@ public final class ClientNetwork {
 	return deal(category, call);
     }
 
+    public ReadyReply ready(String digest) {
+	final String category = "[RDY] ";
+	ReadyInterface logoutService = retrofit.create(ReadyInterface.class);
+	final Call<ReadyReply> call = logoutService.ready(digest);
+	return deal(category, call);
+    }
 }
