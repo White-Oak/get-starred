@@ -1,4 +1,4 @@
-package me.oak.getstarred.server;
+package me.oak.getstarred.server.managers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

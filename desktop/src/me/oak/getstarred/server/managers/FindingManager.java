@@ -1,11 +1,10 @@
-package me.oak.getstarred.server;
+package me.oak.getstarred.server.managers;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import me.oak.getstarred.server.entites.User;
 import me.oak.getstarred.server.entites.UserRepository;
-import me.oak.getstarred.server.replies.FindReply;
-import me.oak.getstarred.server.replies.Status;
+import me.oak.getstarred.server.replies.*;
 import me.whiteoak.minlog.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,4 +38,12 @@ import org.springframework.stereotype.Service;
 	}
     }
 
+    public ReadyReply ready(User user) {
+	boolean readyUp = lobbyManager.readyUp(user);
+	if (readyUp) {
+	    return new ReadyReply(Status.SUCCESS, "Your match is ready");
+	} else {
+	    return new ReadyReply(Status.ERROR, "Your match is not yet ready");
+	}
+    }
 }

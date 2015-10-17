@@ -1,7 +1,8 @@
-package me.oak.getstarred.server;
+package me.oak.getstarred.server.managers;
 
 import java.util.HashMap;
 import java.util.Map;
+import me.oak.getstarred.server.Lobby;
 import me.oak.getstarred.server.entites.User;
 import me.oak.getstarred.server.entites.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
     private final Map<User, Lobby> mapping = new HashMap<>();
     @Autowired private UserRepository userRepository;
+    @Autowired private MatchManager matchManager;
 
     public void createLobby(User one, User two) {
 	one.setInLobby(true);
@@ -23,6 +25,14 @@ import org.springframework.stereotype.Service;
 	userRepository.save(two);
 	final Lobby lobby = new Lobby(one, two);
 	addLobby(lobby);
+    }
+
+    public boolean readyUp(User user) {
+	final boolean readyUp = findLobby(user).readyUp(user);
+	if (readyUp) {
+
+	}
+	return readyUp;
     }
 
     private void addLobby(Lobby lobby) {

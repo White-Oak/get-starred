@@ -19,6 +19,7 @@ public class User {
     private String login;
     private boolean lookingForMatch;
     private boolean inLobby;
+    private boolean inMatch;
     private String password_digest;
     @OneToOne(mappedBy = "user") private Session currentSession;
 
@@ -46,10 +47,7 @@ public class User {
 	    return false;
 	}
 	final User other = (User) obj;
-	if (this.id != other.id) {
-	    return false;
-	}
-	return true;
+	return this.id == other.id;
     }
 
     @Override

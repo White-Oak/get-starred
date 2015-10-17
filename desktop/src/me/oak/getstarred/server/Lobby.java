@@ -9,11 +9,22 @@ import me.oak.getstarred.server.entites.User;
  */
 @Getter public class Lobby {
 
-    private final User[] users = new User[2];
+    protected final User[] users = new User[2];
+    private final boolean readiness[] = new boolean[2];
 
     public Lobby(User one, User two) {
 	users[0] = one;
 	users[1] = two;
+    }
+
+    public boolean readyUp(User user) {
+	assert getFirst().equals(user) || getSecond().equals(user);
+	readiness[getFirst().equals(user) ? 0 : 1] = true;
+	return isReady();
+    }
+
+    public boolean isReady() {
+	return readiness[0] && readiness[1];
     }
 
     public User getOther(User user) {
