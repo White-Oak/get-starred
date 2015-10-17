@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import lombok.RequiredArgsConstructor;
 import me.oak.getstarred.DebugActor;
+import me.oak.getstarred.network.Network;
 import me.oak.getstarred.network.User;
+import me.oak.getstarred.network.messages.ReadyMessage;
 import spaceisnear.game.ui.Button;
 import spaceisnear.game.ui.Label;
 import spaceisnear.starting.ui.ScreenImprovedGreatly;
@@ -16,6 +18,7 @@ import spaceisnear.starting.ui.ScreenImprovedGreatly;
 @RequiredArgsConstructor public class LobbyScreen extends ScreenImprovedGreatly {
 
     private final User me, him;
+    private final Network network;
 
     @Override
     public void create() {
@@ -38,6 +41,13 @@ import spaceisnear.starting.ui.ScreenImprovedGreatly;
 
 	Button ready = new Button("Ready");
 	ready.setPosition(halfwidth - ready.getWidth() / 2, Gdx.graphics.getHeight() - ready.getHeight() - 20);
+	ready.setActivationListener(actor -> {
+	    network.queue(new ReadyMessage(network.getDigest()));
+	    ready.remove();
+	    Label labelRdy = new Label("Waiting...");
+	    labelRdy.setPosition(halfwidth - labelRdy.getWidth() / 2, ready.getY());
+	    getStage().addActor(labelRdy);
+	});
 	stage.addActor(ready);
     }
 

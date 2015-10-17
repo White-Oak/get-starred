@@ -1,9 +1,14 @@
 package me.oak.getstarred;
 
+import com.annimon.stream.Objects;
+import com.annimon.stream.Optional;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import me.oak.getstarred.network.*;
 import me.oak.getstarred.network.messages.FindMessage;
+import me.oak.getstarred.network.messages.ReadyMessage;
 import me.oak.getstarred.screens.*;
 import me.oak.getstarred.server.chat.messages.ChatMessage;
 import me.oak.getstarred.server.replies.*;
@@ -17,8 +22,6 @@ import spaceisnear.game.ui.core.Corev3;
  * @author White Oak
  */
 @RequiredArgsConstructor public class Engine {
-
-    private final static long TIME_BETWEEN_FINDS = 2000l;
 
     private final Network network;
     private final Corev3 corev3;
@@ -50,11 +53,11 @@ import spaceisnear.game.ui.core.Corev3;
 	    if (replies != null) {
 		replies.forEach(this::processReply);
 	    }
-	    if (findingMatch) {
-		if (System.currentTimeMillis() - lastTimeAskedToFound > TIME_BETWEEN_FINDS) {
-		    FindMessage findMessage = new FindMessage(loginReply.getDigest());
-		    network.queue(findMessage);
-		    lastTimeAskedToFound = System.currentTimeMillis();
+	    for (Action action : actions.values()) {
+		if (!action.finished) {
+		    action.act();
+		} else {
+		    actions.removeAction(action);
 		}
 	    }
 	    try {
@@ -63,6 +66,75 @@ import spaceisnear.game.ui.core.Corev3;
 		Log.error("client", "While iterating through casual engine update cycle", ex);
 	    }
 	}
+    }
+    private Actions actions = new Actions();
+
+    @RequiredArgsConstructor private class Action {
+
+	private long lastTimeActed;
+	private final Runnable toRun;
+	private final long delta;
+	private final String id;
+	@Setter private boolean finished;
+
+	{
+	    lastTimeActed = System.currentTimeMillis();
+	}
+
+	@Override
+	public int hashCode() {
+	    int hash = 7;
+	    hash = 53 * hash + Objects.hashCode(this.id);
+	    return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+	    if (this == obj) {
+		return true;
+	    }
+	    if (obj == null) {
+		return false;
+	    }
+	    if (getClass() != obj.getClass()) {
+		return false;
+	    }
+	    final Action other = (Action) obj;
+	    return Objects.equals(this.id, other.id);
+	}
+
+	void act() {
+	    if (!finished) {
+		if (System.currentTimeMillis() - lastTimeActed > delta) {
+		    toRun.run();
+		    lastTimeActed = System.currentTimeMillis();
+		}
+	    }
+	}
+    }
+
+    private class Actions extends LinkedHashMap<String, Action> {
+
+	public boolean containsAction(String id) {
+	    return containsKey(id);
+	}
+
+	public Optional<Action> getAction(String id) {
+	    return Optional.ofNullable(get(id));
+	}
+
+	public void putAction(Action action) {
+	    put(action.id, action);
+	}
+
+	public Action removeAction(Action key) {
+	    return super.remove(key.id);
+	}
+
+	public void finishIfPresent(String id) {
+	    getAction(id).ifPresent(action -> action.setFinished(true));
+	}
+
     }
 
     public void processReply(Reply reply) {
@@ -79,13 +151,19 @@ import spaceisnear.game.ui.core.Corev3;
 		final MainMenuScreen mainMenuScreen = new MainMenuScreen(network);
 		corev3.setNextScreen(mainMenuScreen);
 		break;
-	    case FINDING:
+	    case FINDING: {
 		Statusable statusable = (Statusable) reply;
-		if (!findingMatch && statusable.getStatus() == Statusable.Status.ERROR) {
-		    lastTimeAskedToFound = System.currentTimeMillis();
-		}
 		findingMatch = statusable.getStatus() == Statusable.Status.ERROR;
-		if (!findingMatch) {
+		if (findingMatch) {
+		    if (!actions.containsAction("finding match")) {
+			Action action = new Action(() -> {
+			    FindMessage findMessage = new FindMessage(loginReply.getDigest());
+			    network.queue(findMessage);
+			}, 3000L, "finding match");
+			actions.putAction(action);
+		    }
+		} else {
+		    actions.finishIfPresent("finding match");
 		    FindReply fr = (FindReply) reply;
 		    lobbyUser = fr.getUser();
 		    chatPanel = corev3.createChatPanel();
@@ -95,10 +173,28 @@ import spaceisnear.game.ui.core.Corev3;
 			    chatClient.message(loginReply.getUser().getId(), lobbyUser.getId(), text);
 			}
 		    });
-		    LobbyScreen lobbyScreen = new LobbyScreen(loginReply.getUser(), lobbyUser);
+		    LobbyScreen lobbyScreen = new LobbyScreen(loginReply.getUser(), lobbyUser, network);
 		    corev3.setNextScreen(lobbyScreen);
 		}
-		break;
+	    }
+	    break;
+	    case MATCH_READY: {
+		Statusable statusable = (Statusable) reply;
+		if (statusable.getStatus() == Statusable.Status.ERROR) {
+		    if (!actions.containsAction("waiting for match to be ready")) {
+			Action action = new Action(() -> {
+			    ReadyMessage readyMessage = new ReadyMessage(loginReply.getDigest());
+			    network.queue(readyMessage);
+			}, 3000L, "waiting for match to be ready");
+			actions.putAction(action);
+		    }
+		} else {
+		    actions.finishIfPresent("waiting for match to be ready");
+		    ReadyReply rr = (ReadyReply) reply;
+		    corev3.setNextScreen(new MatchScreen());
+		}
+	    }
+	    break;
 	}
     }
 

@@ -17,6 +17,7 @@ sourceSets {
 dependencies {        
     compile project(":network")
     compile project(':mobileframework')
+    compile 'com.annimon:stream:1.0.3'
     provided 'org.projectlombok:lombok:1.16.6'
     compile 'com.google.code.gson:gson:2.3.1'
     compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
