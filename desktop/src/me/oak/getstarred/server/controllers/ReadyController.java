@@ -25,6 +25,6 @@ public class ReadyController {
 	if (user != null) {
 	    return findingManager.ready(user);
 	}
-	return new ReadyReply(Status.ERROR, "no user for this digest");
+	return new ReadyReply(Status.ERROR, "no user for this digest", null);
     }
 }

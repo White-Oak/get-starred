@@ -41,9 +41,9 @@ import org.springframework.stereotype.Service;
     public ReadyReply ready(User user) {
 	boolean readyUp = lobbyManager.readyUp(user);
 	if (readyUp) {
-	    return new ReadyReply(Status.SUCCESS, "Your match is ready");
+	    return new ReadyReply(Status.SUCCESS, "Your match is ready", null);
 	} else {
-	    return new ReadyReply(Status.ERROR, "Your match is not yet ready");
+	    return new ReadyReply(Status.ERROR, "Your match is not yet ready", null);
 	}
     }
 }

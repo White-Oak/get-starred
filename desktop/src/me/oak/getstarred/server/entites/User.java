@@ -22,6 +22,7 @@ public class User {
     private boolean inMatch;
     private String password_digest;
     @OneToOne(mappedBy = "user") private Session currentSession;
+    @OneToOne(mappedBy = "user") private Deck currentDeck;
 
     public User(String login, String password_digest) {
 	this.login = login;
