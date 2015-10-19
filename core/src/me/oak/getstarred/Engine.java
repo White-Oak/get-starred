@@ -2,6 +2,7 @@ package me.oak.getstarred;
 
 import com.annimon.stream.Objects;
 import com.annimon.stream.Optional;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +29,14 @@ import spaceisnear.game.ui.core.Corev3;
     private LoginReply loginReply;
 
     private boolean findingMatch;
-    private long lastTimeAskedToFound;
 
     private final ChatClient chatClient = new ChatClient(this);
     private SideTextPanel chatPanel;
     private User lobbyUser;
+    private final Actions actions = new Actions();
 
     public void start() {
+	GdxNativesLoader.load();
 	Thread thread = new Thread(this::proccessNetwork, "network");
 	thread.start();
 	chatClient.connect();
@@ -67,75 +69,6 @@ import spaceisnear.game.ui.core.Corev3;
 	    }
 	}
     }
-    private Actions actions = new Actions();
-
-    @RequiredArgsConstructor private class Action {
-
-	private long lastTimeActed;
-	private final Runnable toRun;
-	private final long delta;
-	private final String id;
-	@Setter private boolean finished;
-
-	{
-	    lastTimeActed = System.currentTimeMillis();
-	}
-
-	@Override
-	public int hashCode() {
-	    int hash = 7;
-	    hash = 53 * hash + Objects.hashCode(this.id);
-	    return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-	    if (this == obj) {
-		return true;
-	    }
-	    if (obj == null) {
-		return false;
-	    }
-	    if (getClass() != obj.getClass()) {
-		return false;
-	    }
-	    final Action other = (Action) obj;
-	    return Objects.equals(this.id, other.id);
-	}
-
-	void act() {
-	    if (!finished) {
-		if (System.currentTimeMillis() - lastTimeActed > delta) {
-		    toRun.run();
-		    lastTimeActed = System.currentTimeMillis();
-		}
-	    }
-	}
-    }
-
-    private class Actions extends LinkedHashMap<String, Action> {
-
-	public boolean containsAction(String id) {
-	    return containsKey(id);
-	}
-
-	public Optional<Action> getAction(String id) {
-	    return Optional.ofNullable(get(id));
-	}
-
-	public void putAction(Action action) {
-	    put(action.id, action);
-	}
-
-	public Action removeAction(Action key) {
-	    return super.remove(key.id);
-	}
-
-	public void finishIfPresent(String id) {
-	    getAction(id).ifPresent(action -> action.setFinished(true));
-	}
-
-    }
 
     public void processReply(Reply reply) {
 	flash(reply);
@@ -150,6 +83,9 @@ import spaceisnear.game.ui.core.Corev3;
 		network.setDigest(loginReply.getDigest());
 		final MainMenuScreen mainMenuScreen = new MainMenuScreen(network);
 		corev3.setNextScreen(mainMenuScreen);
+//		DebugLogger debugLogger = new DebugLogger();
+//		corev3.addToMainStage(debugLogger.getPanel());
+//		Log.setLogger(debugLogger);
 		break;
 	    case FINDING: {
 		Statusable statusable = (Statusable) reply;
@@ -225,6 +161,74 @@ import spaceisnear.game.ui.core.Corev3;
 	    default:
 		throw new AssertionError("wut");
 	}
+    }
+
+    @RequiredArgsConstructor private class Action {
+
+	private long lastTimeActed;
+	private final Runnable toRun;
+	private final long delta;
+	private final String id;
+	@Setter private boolean finished;
+
+	{
+	    lastTimeActed = System.currentTimeMillis();
+	}
+
+	@Override
+	public int hashCode() {
+	    int hash = 7;
+	    hash = 53 * hash + Objects.hashCode(this.id);
+	    return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+	    if (this == obj) {
+		return true;
+	    }
+	    if (obj == null) {
+		return false;
+	    }
+	    if (getClass() != obj.getClass()) {
+		return false;
+	    }
+	    final Action other = (Action) obj;
+	    return Objects.equals(this.id, other.id);
+	}
+
+	void act() {
+	    if (!finished) {
+		if (System.currentTimeMillis() - lastTimeActed > delta) {
+		    toRun.run();
+		    lastTimeActed = System.currentTimeMillis();
+		}
+	    }
+	}
+    }
+
+    private class Actions extends LinkedHashMap<String, Action> {
+
+	public boolean containsAction(String id) {
+	    return containsKey(id);
+	}
+
+	public Optional<Action> getAction(String id) {
+	    return Optional.ofNullable(get(id));
+	}
+
+	public void putAction(Action action) {
+	    put(action.id, action);
+	}
+
+	public Action removeAction(Action key) {
+	    return super.remove(key.id);
+	}
+
+	public void finishIfPresent(String id) {
+	    getAction(id).ifPresent(action -> action.setFinished(true));
+	}
+
     }
 
 }
