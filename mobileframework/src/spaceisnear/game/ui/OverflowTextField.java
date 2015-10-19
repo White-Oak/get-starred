@@ -78,6 +78,7 @@ import lombok.Setter;
     @Override
     public void componentActivated(UIElement actor) {
 	textField.activated();
+	keyboard.show(false);
     }
 
 }

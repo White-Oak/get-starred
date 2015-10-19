@@ -11,9 +11,6 @@ import me.oak.getstarred.network.User;
 @Getter @ToString(callSuper = true) public class FindReply extends StatusReply {
 
     private User user;
+    private final Type type = Type.FINDING;
 
-    @Override
-    public Type getType() {
-	return Type.FINDING;
-    }
 }

@@ -1,7 +1,6 @@
 package spaceisnear.game.ui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -16,7 +15,6 @@ public abstract class UIElement extends Group {
 
     public static final BitmapFont font;
     @Getter(AccessLevel.PROTECTED) private final static ShapeRenderer renderer = new ShapeRenderer();
-    private final OrthographicCamera camera = new OrthographicCamera(1200, 600);
 
     @Getter @Setter private ActivationListener activationListener;
 
@@ -44,9 +42,6 @@ public abstract class UIElement extends Group {
     }
 
     public UIElement() {
-	camera.setToOrtho(true);
-	camera.update();
-	renderer.setProjectionMatrix(camera.combined);
 	init();
     }
 

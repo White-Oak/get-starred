@@ -1,5 +1,6 @@
 package me.oak.getstarred.server.replies;
 
+import lombok.Getter;
 import lombok.ToString;
 
 /**
@@ -9,8 +10,5 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class PlainReply extends Reply {
 
-    @Override
-    public Reply.Type getType() {
-	return Reply.Type.PLAIN;
-    }
+    @Getter private final Type type = Type.PLAIN;
 }

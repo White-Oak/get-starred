@@ -263,8 +263,6 @@ public final class TextField extends UIElement {
     protected void activated() {
 	super.activated();
 	getStage().setKeyboardFocus(null);
-	keyboard.show(false);
-//	System.out.println(text + "; Length: " + text.length());
 	if (currentOverflow != null) {
 	    currentOverflow.activated();
 	    currentOverflow = null;

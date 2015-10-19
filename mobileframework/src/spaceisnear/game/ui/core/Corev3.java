@@ -3,6 +3,7 @@ package spaceisnear.game.ui.core;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -10,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.Setter;
 import me.whiteoak.minlog.Log;
-import spaceisnear.game.ui.*;
+import spaceisnear.game.ui.FlashMessage;
+import spaceisnear.game.ui.UIElement;
 import spaceisnear.starting.ui.ScreenImprovedGreatly;
 
 /**
@@ -29,7 +31,6 @@ public class Corev3 extends com.badlogic.gdx.Game {
     //
     private Stage ownStage;
     private FlashMessage flashMessage;
-    private ChatPanel chatPanel;
 
     @Override public void create() {
 	Gdx.input.setInputProcessor(multiplexer);
@@ -116,11 +117,7 @@ public class Corev3 extends com.badlogic.gdx.Game {
 	ownStage.addActor(flashMessage);
     }
 
-    public ChatPanel createChatPanel() {
-	if (chatPanel == null) {
-	    chatPanel = new ChatPanel();
-	    ownStage.addActor(chatPanel);
-	}
-	return chatPanel;
+    public void addToMainStage(Actor actor) {
+	ownStage.addActor(actor);
     }
 }

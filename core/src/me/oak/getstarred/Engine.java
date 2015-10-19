@@ -13,8 +13,8 @@ import me.oak.getstarred.screens.*;
 import me.oak.getstarred.server.chat.messages.ChatMessage;
 import me.oak.getstarred.server.replies.*;
 import me.whiteoak.minlog.Log;
-import spaceisnear.game.ui.ChatPanel;
 import spaceisnear.game.ui.FlashMessage;
+import spaceisnear.game.ui.SideTextPanel;
 import spaceisnear.game.ui.core.Corev3;
 
 /**
@@ -31,7 +31,7 @@ import spaceisnear.game.ui.core.Corev3;
     private long lastTimeAskedToFound;
 
     private final ChatClient chatClient = new ChatClient(this);
-    private ChatPanel chatPanel;
+    private SideTextPanel chatPanel;
     private User lobbyUser;
 
     public void start() {
@@ -166,7 +166,8 @@ import spaceisnear.game.ui.core.Corev3;
 		    actions.finishIfPresent("finding match");
 		    FindReply fr = (FindReply) reply;
 		    lobbyUser = fr.getUser();
-		    chatPanel = corev3.createChatPanel();
+		    chatPanel = new SideTextPanel();
+		    corev3.addToMainStage(chatPanel);
 		    chatPanel.setActivationListener(actor -> {
 			if (lobbyUser.getId() > 0) {
 			    String text = chatPanel.getTextField().getText();

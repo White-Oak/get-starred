@@ -14,8 +14,5 @@ import me.oak.getstarred.network.User;
     private User user;
     private String digest;
 
-    @Override
-    public Type getType() {
-	return Type.LOGIN;
-    }
+    private final Type type = Type.LOGIN;
 }

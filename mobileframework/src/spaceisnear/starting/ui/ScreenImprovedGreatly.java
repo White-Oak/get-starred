@@ -72,10 +72,4 @@ public abstract class ScreenImprovedGreatly implements ScreenImproved {
     public void dispose() {
 	stage.dispose();
     }
-
-    protected void addMouseCatcher() {
-	final MouseCatcher mouseCatcher = new MouseCatcher();
-	mouseCatcher.setBounds(0, 0, 800, 600);
-	stage.addActor(mouseCatcher);
-    }
 }
