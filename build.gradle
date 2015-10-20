@@ -28,6 +28,36 @@ allprojects {
     }
 }
 
+project(':core'){
+    apply plugin: "java"
+    
+    configurations {
+	provided
+    }
+    sourceSets {
+	main {
+	    compileClasspath += configurations.provided
+	}
+    }
+    dependencies {        
+	compile project(":network")
+	compile project(':mobileframework')
+	compile 'com.annimon:stream:1.0.3'
+	provided 'org.projectlombok:lombok:1.16.6'
+	compile 'com.google.code.gson:gson:2.3.1'
+	compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+	compile 'com.esotericsoftware:kryonet:2.22.0-RC1'
+    }
+}
+
+project(':mapconverter'){
+    apply plugin: "java"
+   
+    dependencies {        
+	compile 'com.esotericsoftware:kryonet:2.22.0-RC1'
+    }
+}
+
 project(":desktop") {
     apply plugin: "java"
 
