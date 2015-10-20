@@ -1,0 +1,14 @@
+apply plugin: "java"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+sourceSets.main.java.srcDirs = ["src/"]
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+task run(dependsOn: classes, type: JavaExec) {
+    main = "me.oak.getstarred.map.Converter"
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    ignoreExitValue = true
+}
