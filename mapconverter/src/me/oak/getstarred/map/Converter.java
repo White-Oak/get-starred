@@ -12,7 +12,7 @@ import me.riseremi.mreader.StarredMap;
 public class Converter {
 
     public static void convert() throws FileNotFoundException, IOException {
-	File file = new File("../android/assets/map.m");
+	File file = new File("map.m");
 	FileReader fileReader = new FileReader(file);
 	int[][] map = new StarredMap(fileReader).getBackgroundLayer();
 	Kryo kryo = new Kryo();
