@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +29,9 @@ public class SidePanel extends UIElement {
     private final TextView textView;
 
     private int extraY;
+    private final UIElement mouseCatcher;
+
+    @Setter private String name;
 
     public SidePanel() {
 	setX(Gdx.graphics.getWidth() - EXTRA_WIDTH);
@@ -35,7 +39,7 @@ public class SidePanel extends UIElement {
 	setBounds(getX(), 0, getWidth(), getHeight());
 	textView.setBounds(EXTRA_WIDTH, 0, MAIN_WIDTH, MAIN_HEIGHT);
 	addActor(textView);
-	final UIElement mouseCatcher = new UIElement() {
+	mouseCatcher = new UIElement() {
 	    {
 		{
 		    addListener(new ClickListener() {
@@ -53,8 +57,13 @@ public class SidePanel extends UIElement {
 	    public void paint(Batch batch) {
 	    }
 	};
-	mouseCatcher.setBounds(0, extraY, EXTRA_WIDTH, EXTRA_HEIGHT);
+	setExtraY(0);
 	addActor(mouseCatcher);
+    }
+
+    public void setExtraY(int extraY) {
+	this.extraY = extraY;
+	mouseCatcher.setBounds(0, extraY, EXTRA_WIDTH, EXTRA_HEIGHT);
     }
 
     protected void resetHidden() {
@@ -103,6 +112,11 @@ public class SidePanel extends UIElement {
 	renderer.rect(EXTRA_WIDTH, 0, MAIN_WIDTH, MAIN_HEIGHT);
 	renderer.end();
 	Gdx.gl.glDisable(GL20.GL_BLEND);
+	if (name != null) {
+	    batch.begin();
+	    font.draw(batch, name, EXTRA_WIDTH / 2 + getX(), extraY + getY(), getLineWidth("e"), Align.top, true);
+	    batch.end();
+	}
     }
 
 }
