@@ -21,16 +21,18 @@ public final class TiledLayer extends Layer {
     @Setter @Getter private int visibleWidthInBlocks, visibleHeightInBlocks;
 
     public TiledLayer(Tileable tileable, int widthInBlocks, int heightInBlocks) {
-	super(widthInBlocks, heightInBlocks);
+	this(tileable, new int[widthInBlocks][heightInBlocks]);
+    }
+
+    public TiledLayer(Tileable tileable, int[][] map) {
+	super(map.length, map[0].length);
 	if (!tileable.isCorrect()) {
 	    throw new IllegalArgumentException("Image is malformed.");
 	}
 	this.tileHeight = tileable.getTileHeight();
 	this.tileWidth = tileable.getTileWidth();
 	drawable = tileable.chopImage();
-	map = new int[widthInBlocks][heightInBlocks];
-
-	resetMap(0);
+	this.map = map;
     }
 
     public void setTile(int x, int y, int tileId) {
