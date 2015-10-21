@@ -9,4 +9,8 @@ import lombok.Getter;
 public abstract class StatusReply extends Reply implements Statusable {
 
     @Getter private Status status;
+
+    public static Class getHiddenClass() {
+	return Status.class;
+    }
 }

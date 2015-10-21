@@ -2,8 +2,6 @@ package me.oak.getstarred.network.messages;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import me.oak.getstarred.network.ClientNetwork;
-import me.oak.getstarred.server.replies.LoginReply;
 
 /**
  *
@@ -16,8 +14,4 @@ import me.oak.getstarred.server.replies.LoginReply;
 
     private final MessageType type = MessageType.LOGIN_REQ;
 
-    @Override
-    public LoginReply process(ClientNetwork network) {
-	return network.login(login, password_digest);
-    }
 }

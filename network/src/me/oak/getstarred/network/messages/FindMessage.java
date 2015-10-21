@@ -2,8 +2,6 @@ package me.oak.getstarred.network.messages;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import me.oak.getstarred.network.ClientNetwork;
-import me.oak.getstarred.server.replies.FindReply;
 
 /**
  *
@@ -14,8 +12,4 @@ import me.oak.getstarred.server.replies.FindReply;
     private final String digest;
     private final MessageType type = MessageType.FIND;
 
-    @Override
-    public FindReply process(ClientNetwork network) {
-	return network.find(digest);
-    }
 }

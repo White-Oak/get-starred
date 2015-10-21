@@ -1,7 +1,6 @@
 package me.oak.getstarred;
 
-import com.annimon.stream.Objects;
-import com.annimon.stream.Optional;
+import com.annimon.stream.*;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -53,7 +52,7 @@ import spaceisnear.game.ui.core.Corev3;
 	    network.sendQueued();
 	    Collection<Reply> replies = network.processReceived();
 	    if (replies != null) {
-		replies.forEach(this::processReply);
+		Stream.of(replies).forEach(this::processReply);
 	    }
 	    for (Action action : actions.values()) {
 		if (!action.finished) {
@@ -77,16 +76,19 @@ import spaceisnear.game.ui.core.Corev3;
 		final NothingScreen nothingScreen = new NothingScreen(network);
 		corev3.setNextScreen(nothingScreen);
 		break;
-	    case LOGIN:
+	    case LOGIN: {
 		loginReply = (LoginReply) reply;
-		chatClient.handshake(loginReply.getUser().getId());
-		network.setDigest(loginReply.getDigest());
-		final MainMenuScreen mainMenuScreen = new MainMenuScreen(network);
-		corev3.setNextScreen(mainMenuScreen);
+		if (loginReply.getStatus() == Statusable.Status.SUCCESS) {
+		    chatClient.handshake(loginReply.getUser().getId());
+		    network.setDigest(loginReply.getDigest());
+		    final MainMenuScreen mainMenuScreen = new MainMenuScreen(network);
+		    corev3.setNextScreen(mainMenuScreen);
 //		DebugLogger debugLogger = new DebugLogger();
 //		corev3.addToMainStage(debugLogger.getPanel());
 //		Log.setLogger(debugLogger);
-		break;
+		}
+	    }
+	    break;
 	    case FINDING: {
 		Statusable statusable = (Statusable) reply;
 		findingMatch = statusable.getStatus() == Statusable.Status.ERROR;

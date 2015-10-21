@@ -14,6 +14,7 @@ public class MeltingPoint extends Corev3 {
     private final Engine engine;
 
     public MeltingPoint() {
+	network.start();
 	setStartingScreen(new NothingScreen(network));
 	engine = new Engine(network, this);
 	engine.start();

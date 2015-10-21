@@ -15,6 +15,7 @@ import spaceisnear.game.ui.SidePanel;
 
     {
 	panel.setExtraY(200);
+	panel.setName("debug");
     }
 
     @Override

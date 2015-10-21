@@ -1,5 +1,6 @@
 package me.oak.getstarred.network;
 
+import java.io.IOException;
 import java.util.*;
 import lombok.*;
 import me.oak.getstarred.ClientContext;
@@ -12,12 +13,20 @@ import me.oak.getstarred.server.replies.Reply;
  */
 @RequiredArgsConstructor public class Network {
 
-    private final ClientNetwork clientNetwork = new ClientNetwork();
     private final ClientContext context;
     private final Queue<Message> queueSent = new LinkedList<>();
     private final Queue<Reply> queueReceived = new LinkedList<>();
+    private final KryonetClient kryonetClient = new KryonetClient();
 
     @Getter @Setter private String digest;
+
+    public void start() {
+	try {
+	    kryonetClient.start();
+	} catch (IOException ex) {
+	    ex.printStackTrace();
+	}
+    }
 
     public void queue(Message message) {
 	queueSent.add(message);
@@ -25,17 +34,17 @@ import me.oak.getstarred.server.replies.Reply;
 
     public void sendQueued() {
 	while (!queueSent.isEmpty()) {
-	    queueReceived.add(queueSent.poll().process(clientNetwork));
+	    kryonetClient.send(queueSent.poll());
 	}
     }
 
     public Collection<Reply> processReceived() {
-	if (queueReceived.isEmpty()) {
+	if (kryonetClient.getReplies().isEmpty()) {
 	    return null;
 	}
 	List<Reply> list = new LinkedList<>();
-	while (!queueReceived.isEmpty()) {
-	    final Reply poll = queueReceived.poll();
+	while (!kryonetClient.getReplies().isEmpty()) {
+	    final Reply poll = kryonetClient.getReplies().poll();
 	    System.out.println(poll.getClass() + " " + poll);
 	    list.add(poll);
 	}
