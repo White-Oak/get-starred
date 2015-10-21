@@ -16,9 +16,6 @@ import lombok.Getter;
 
     @Override
     public void process(Managers managers, Connection connection) {
-	if (managers == null) {
-	    System.out.println("LOL");
-	}
 	managers.accountManager.tryLogin(login, password_digest, connection);
     }
 }

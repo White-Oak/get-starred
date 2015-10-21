@@ -12,10 +12,11 @@ import lombok.Getter;
     private String login;
     private String password_digest;
 
-    private MessageType type = MessageType.REGISTRATION_REQ;
-    private Managers managers;
+    private final MessageType type = MessageType.REGISTRATION_REQ;
 
+    @Override
     public void process(Managers managers, Connection connection) {
+	managers.accountManager.tryRegister(login, password_digest, connection);
     }
 
 }

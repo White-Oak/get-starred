@@ -65,7 +65,6 @@ task versionCodeUpdate {
 	file.withReader('UTF-8'){fr ->
 	    project.ext.mBuildNumber = Integer.parseInt(fr.readLine())
 	    project.ext.mVersion = fr.readLine()
-	    println(":${project.name}:versionCodeUpdate - current build number is ${mBuildNumber}")
 	}
     }
     jar.baseName = 'get-starred-server'
