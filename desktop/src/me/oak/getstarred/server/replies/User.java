@@ -13,6 +13,6 @@ class User {
     String login;
 
     public static User hideUnwanted(me.oak.getstarred.server.entites.User user) {
-	return new User(user.getId(), user.getLogin());
+	return user == null ? null : new User(user.getId(), user.getLogin());
     }
 }

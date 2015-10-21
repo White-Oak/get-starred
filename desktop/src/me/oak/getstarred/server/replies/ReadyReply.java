@@ -13,6 +13,7 @@ import me.oak.getstarred.server.entites.Deck;
     private Status status;
     private String message;
     private MatchReady matchReady;
+    private final Reply.Type type = Reply.Type.REGISTER;
 
     @RequiredArgsConstructor public static class MatchReady {
 

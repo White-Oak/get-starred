@@ -1,12 +1,24 @@
 package me.oak.getstarred.server.replies;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  *
  * @author White Oak
  */
-@Value public class Reply {
+@RequiredArgsConstructor @Getter public abstract class Reply {
 
-    private String message;
+    private final String message;
+
+    public static Class getHiddenClassUser() {
+	return User.class;
+    }
+
+    protected abstract Type getType();
+
+    protected enum Type {
+
+	REGISTER, LOGIN, PLAIN, FINDING, MATCH_READY
+    }
 }

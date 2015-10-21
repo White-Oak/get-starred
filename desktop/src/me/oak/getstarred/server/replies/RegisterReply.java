@@ -1,13 +1,19 @@
 package me.oak.getstarred.server.replies;
 
-import lombok.Value;
+import lombok.Getter;
 
 /**
  *
  * @author White Oak
  */
-@Value public class RegisterReply {
+@Getter public class RegisterReply extends Reply {
 
     private final Status status;
-    private final String message;
+    private final Type type = Type.REGISTER;
+
+    public RegisterReply(Status status, String message) {
+	super(message);
+	this.status = status;
+    }
+
 }

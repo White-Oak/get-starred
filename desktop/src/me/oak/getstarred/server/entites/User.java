@@ -1,28 +1,24 @@
 package me.oak.getstarred.server.entites;
 
-import javax.persistence.*;
 import lombok.*;
 
 /**
  *
  * @author White Oak
  */
-@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String login;
     private boolean lookingForMatch;
     private boolean inLobby;
     private boolean inMatch;
     private String password_digest;
-    @OneToOne(mappedBy = "user") private Session currentSession;
-    @OneToOne(mappedBy = "user") private Deck currentDeck;
+    private Session currentSession;
+    private Deck currentDeck;
 
     public User(String login, String password_digest) {
 	this.login = login;

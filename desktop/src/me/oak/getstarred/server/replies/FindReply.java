@@ -11,6 +11,7 @@ import lombok.Value;
     private final Status status;
     private final String message;
     private final User user;
+    private final Reply.Type type = Reply.Type.FINDING;
 
     public FindReply(Status status, String message, me.oak.getstarred.server.entites.User user) {
 	this.status = status;

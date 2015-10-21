@@ -1,12 +1,23 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url 'http://repo.spring.io/plugins-release' }
+    }
+    dependencies {
+        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE")
+    }
+}
 apply plugin: "java"
+apply plugin: 'propdeps'
 apply plugin: 'spring-boot'
 
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
+
 allprojects {
     repositories {
-        mavenCentral()
 	maven {
 	    url  "http://dl.bintray.com/white-oak/maven" 
 	}
@@ -27,14 +38,12 @@ sourceSets {
     }
 }
 
-dependencies {       
+dependencies {     
+    compile "org.springframework.boot:spring-boot-starter"
     compile 'me.whiteoak.minlog:oak-minlog:1.0.4'
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile 'com.h2database:h2'
-    compile 'org.projectlombok:lombok:1.16.6'
+    provided 'org.projectlombok:lombok:1.16.6'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.esotericsoftware:kryonet:2.22.0-RC1'
-    compile 'org.springframework.boot:spring-boot-starter-web'
 }
 
 task versionCodeUpdate {
