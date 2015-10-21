@@ -4,12 +4,10 @@ buildscript {
         maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
-        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE")
     }
 }
 apply plugin: "java"
-apply plugin: 'propdeps'
 apply plugin: 'spring-boot'
 
 sourceCompatibility = 1.8
@@ -38,10 +36,19 @@ sourceSets {
     }
 }
 
+
+configurations {
+    excluded
+}
+sourceSets {
+    main {
+	compileClasspath += configurations.excluded
+    }
+}
 dependencies {     
     compile "org.springframework.boot:spring-boot-starter"
     compile 'me.whiteoak.minlog:oak-minlog:1.0.4'
-    provided 'org.projectlombok:lombok:1.16.6'
+    excluded 'org.projectlombok:lombok:1.16.6'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.esotericsoftware:kryonet:2.22.0-RC1'
 }
@@ -53,20 +60,23 @@ task versionCodeUpdate {
     }
     inputs.files  different
     outputs.file  "./src/me/oak/getstarred/server/VersionCode.java"
+    def file = file("./version.code")
+    if(file.exists()){
+	file.withReader('UTF-8'){fr ->
+	    project.ext.mBuildNumber = Integer.parseInt(fr.readLine())
+	    project.ext.mVersion = fr.readLine()
+	    println(":${project.name}:versionCodeUpdate - current build number is ${mBuildNumber}")
+	}
+    }
+    jar.baseName = 'get-starred-server'
+    jar.version = "${mVersion}-b${mBuildNumber}"
     doLast{
-	def file = file("./version.code")
-	if(file.exists()){
-	    file.withReader('UTF-8'){fr ->
-		project.ext.mBuildNumber = Integer.parseInt(fr.readLine())
-		project.ext.mVersion = fr.readLine()
-		if(!project.ext.buildNumberIncremented){
-		    project.ext.mBuildNumber++
-		    project.ext.buildNumberIncremented = true
-		    println(":${project.name}:versionCodeUpdate - current build number is ${mBuildNumber}")
-		}else{
-		    println(":${project.name}:versionCodeUpdate - build number has already been incremented in this build -- check your build pipeline.")
-		}
-	    }
+	if(!project.ext.buildNumberIncremented){
+	    project.ext.mBuildNumber++
+	    project.ext.buildNumberIncremented = true
+	    println(":${project.name}:versionCodeUpdate - current build number is ${mBuildNumber}")
+	}else{
+	    println(":${project.name}:versionCodeUpdate - build number has already been incremented in this build -- check your build pipeline.")
 	}
 	overwriteVersionCodeFile(mBuildNumber, mVersion)
 	createVersionCodeJava(mBuildNumber, mVersion)
