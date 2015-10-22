@@ -19,13 +19,14 @@ import me.whiteoak.minlog.Log;
 public class KryonetClient extends Listener {
 
     private static final Gson GSON = new Gson();
+    private final static String POOL[] = {"192.168.0.17", "77.244.77.10"};
     public Client server = new Client(8192, 1024);
     @Getter private final Queue<Reply> replies = new LinkedList<>();
 
     public void start() throws IOException {
 	Thread thread = new Thread(() -> {
 	    server.start();
-	    connect();
+	    connectPool(0);
 	    server.addListener(this);
 	    register(server.getKryo());
 	    Log.info("client", "Chat is connected");
@@ -38,11 +39,18 @@ public class KryonetClient extends Listener {
 	}
     }
 
-    public void connect() {
+    private boolean connectPool(int trial) {
 	try {
-	    server.connect(2000, "localhost", 1234);
+	    server.connect(5000, POOL[trial], 1234);
+	    return true;
 	} catch (IOException ex) {
-	    ex.printStackTrace();
+	    trial++;
+	    if (trial < POOL.length) {
+		return connectPool(trial);
+	    } else {
+		Log.error("client", "Cannot connect to chat server");
+		throw new RuntimeException("Cannot connect to the main server");
+	    }
 	}
     }
 
