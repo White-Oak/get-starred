@@ -1,0 +1,10 @@
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
+
+allprojects {
+
+    repositories {
+        mavenCentral()
+    }
+}
