@@ -1,6 +1,7 @@
 package me.oak.getstarred.server;
 
 import java.io.IOException;
+import me.oak.getstarred.server.managers.AccountManager;
 import me.whiteoak.minlog.FileLogger;
 import me.whiteoak.minlog.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Main implements CommandLineRunner {
 
     @Autowired private KryonetServer kryonetServer;
+    @Autowired private AccountManager accountManager;
 
     public static void main(String args[]) {
 	Log.setLogger(new FileLogger());
@@ -32,6 +34,8 @@ public class Main implements CommandLineRunner {
 		}
 	    }, "messages processing");
 	    thread.start();
+	    accountManager.register("Oak", "1234");
+	    accountManager.register("Remi", "4321");
 	} catch (IOException ex) {
 	    Log.error("server", "while trying to init kryonet", ex);
 	    throw new RuntimeException(ex);

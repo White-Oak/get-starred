@@ -24,11 +24,19 @@ import org.springframework.stereotype.Service;
     private final Map<String, Session> sessions = new HashMap<>();
 
     public User getUser(String digest) {
-//	final Optional<Session> findByDigest = sessionRepository.findByDigest(digest);
-//	if (findByDigest.isPresent()) {
-//	    return findByDigest.get().getUser();
-//	}
+	Session session = sessions.get(digest);
+	if (session != null) {
+	    return session.getUser();
+	}
 	return null;
+    }
+
+    public void register(String login, String pass) {
+	Log.info("server", login + " is registered");
+	User user = new User(login, pass);
+	usersCount++;
+	user.setId(usersCount);
+	users.put(login, user);
     }
 
     public void tryRegister(String login, String password_digest, Connection connection) {
@@ -36,11 +44,7 @@ import org.springframework.stereotype.Service;
 	if (users.get(login) != null) {
 	    registerReply = new RegisterReply(Status.ERROR, login + " is already registered");
 	} else {
-	    Log.info("server", login + " is registered");
-	    User user = new User(login, password_digest);
-	    usersCount++;
-	    user.setId(usersCount);
-	    users.put(login, user);
+	    register(login, password_digest);
 	    registerReply = new RegisterReply(Status.SUCCESS, login + " was registered");
 	}
 	kryonetServer.send(registerReply, connection);
@@ -55,6 +59,7 @@ import org.springframework.stereotype.Service;
 		Date out = Date.from(of.atZone(ZoneId.systemDefault()).toInstant());
 		Session session = new Session(get, login, out, connection);
 		sessions.put(login, session);
+		get.setCurrentSession(session);
 		LoginReply loginReply = new LoginReply(Status.SUCCESS, login + " was logged in", login, get);
 		kryonetServer.send(loginReply, connection);
 	    } else {
@@ -71,10 +76,10 @@ import org.springframework.stereotype.Service;
     public void tryLogout(String digest, Connection connection) {
 	Session get = sessions.remove(digest);
 	if (get != null) {
-	    Reply reply = new PlainReply("You successfully logged out");
+	    Reply reply = new PlainReply(Status.SUCCESS, "You successfully logged out");
 	    kryonetServer.send(reply, get.getConnection());
 	} else {
-	    kryonetServer.send(new PlainReply("There is no session with such a key"), connection);
+	    kryonetServer.send(new PlainReply(Status.ERROR, "There is no session with such a key"), connection);
 	}
     }
 }

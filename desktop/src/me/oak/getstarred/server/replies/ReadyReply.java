@@ -1,19 +1,23 @@
 package me.oak.getstarred.server.replies;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import me.oak.getstarred.server.entites.Deck;
 
 /**
  *
  * @author White Oak
  */
-@Value public class ReadyReply {
+public class ReadyReply extends Reply {
 
     private Status status;
-    private String message;
     private MatchReady matchReady;
-    private final Reply.Type type = Reply.Type.REGISTER;
+    @Getter private final Reply.Type type = Reply.Type.MATCH_READY;
+
+    public ReadyReply(Status status, String message, MatchReady matchReady) {
+	super(message);
+	this.status = status;
+	this.matchReady = matchReady;
+    }
 
     @RequiredArgsConstructor public static class MatchReady {
 
@@ -21,6 +25,10 @@ import me.oak.getstarred.server.entites.Deck;
 
 	public MatchReady(Deck one, Deck two) {
 	    this(new Deck[]{one, two});
+	}
+
+	private class Deck {
+
 	}
     }
 }

@@ -1,28 +1,25 @@
 package me.oak.getstarred.server.replies;
 
-import lombok.Value;
+import lombok.Getter;
 
 /**
  *
  * @author White Oak
  */
-@Value public class FindReply {
+public class FindReply extends Reply {
 
     private final Status status;
-    private final String message;
     private final User user;
-    private final Reply.Type type = Reply.Type.FINDING;
+    @Getter private final Reply.Type type = Reply.Type.FINDING;
 
     public FindReply(Status status, String message, me.oak.getstarred.server.entites.User user) {
+	super(message);
 	this.status = status;
-	this.message = message;
 	this.user = User.hideUnwanted(user);
     }
 
     public FindReply(Status status, String message) {
-	this.status = status;
-	this.message = message;
-	user = null;
+	this(status, message, null);
     }
 
 }
