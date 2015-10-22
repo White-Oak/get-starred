@@ -1,1 +1,6 @@
-include 'desktop'
+include 'server', 'mapconverter'
+include 'get-starred-main:network'
+include 'get-starred-main:core'
+include 'get-starred-main:desktop'
+include 'get-starred-main:android'
+include 'get-starred-main:mobileframework'

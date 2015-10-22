@@ -1,10 +1,20 @@
 apply plugin: "java"
+apply plugin: 'propdeps'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/" ]
+dependencies {        
+    compile project(":get-starred-main:network")
+    compile project(':get-starred-main:mobileframework')
+    compile 'com.annimon:stream:1.0.3'
+    provided 'org.projectlombok:lombok:1.16.6'
+    compile 'com.google.code.gson:gson:2.3.1'
+    compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    compile 'com.esotericsoftware:kryonet:2.22.0-RC1'
+}
 
 ext{
     buildNumberIncremented = false

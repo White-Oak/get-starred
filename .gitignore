@@ -66,3 +66,4 @@ build/
 /desktop/src/me/oak/getstarred/server/VersionCode.java
 .nb-gradle-properties
 /desktop/logs/
+/server/logs/

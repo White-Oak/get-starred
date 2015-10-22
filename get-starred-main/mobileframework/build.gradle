@@ -1,7 +1,17 @@
 apply plugin: "java"
+apply plugin: 'propdeps'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 sourceSets.main.java.srcDirs = ["src/"]
 
 project.ext.assetsDir = new File("../android/assets");
+
+dependencies {        
+    compile 'me.whiteoak.minlog:oak-minlog:1.0.4'
+    provided 'org.projectlombok:lombok:1.16.6'
+    compile 'com.annimon:stream:1.0.3'
+    compile 'com.google.code.gson:gson:2.3.1'
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+}
