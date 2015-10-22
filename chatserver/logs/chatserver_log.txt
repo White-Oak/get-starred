@@ -1,0 +1,1 @@
+00:32  INFO: [chatserver] Message is [2->2]: hi!

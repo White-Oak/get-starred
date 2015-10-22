@@ -1,4 +1,4 @@
-include 'server', 'mapconverter'
+include 'server', 'mapconverter', 'chatserver'
 include 'get-starred-main:network'
 include 'get-starred-main:core'
 include 'get-starred-main:desktop'
