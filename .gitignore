@@ -64,3 +64,4 @@ build/
 .DS_Store
 /core/src/me/oak/getstarred/VersionCode.java
 /.nb-gradle/
+.nb-gradle-properties
