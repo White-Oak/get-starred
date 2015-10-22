@@ -1,5 +1,6 @@
 package me.oak.getstarred.server;
 
+import java.util.Arrays;
 import lombok.Getter;
 import me.oak.getstarred.server.entites.User;
 
@@ -37,6 +38,28 @@ import me.oak.getstarred.server.entites.User;
 
     public User getSecond() {
 	return users[1];
+    }
+
+    @Override
+    public int hashCode() {
+	int hash = 7;
+	hash = 89 * hash + Arrays.deepHashCode(this.users);
+	return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	if (this == obj) {
+	    return true;
+	}
+	if (obj == null) {
+	    return false;
+	}
+	if (getClass() != obj.getClass()) {
+	    return false;
+	}
+	final Lobby other = (Lobby) obj;
+	return Arrays.deepEquals(this.users, other.users);
     }
 
 }

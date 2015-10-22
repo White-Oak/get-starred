@@ -59,11 +59,13 @@ public class LobbyManager {
     @Scheduled(fixedDelay = 1000L)
     private void checkForReadiness() {
 	mapping.values().stream()
+		.distinct()
 		.filter(value -> value.isReady())
 		.forEach(value -> {
 		    try {
-
 			final ReadyReply readyReply = new ReadyReply(Status.SUCCESS, "Your match is ready", null);
+			mapping.remove(value.getFirst());
+			mapping.remove(value.getSecond());
 			kryonetServer.send(readyReply, value.getFirst().getCurrentSession().getConnection());
 			kryonetServer.send(readyReply, value.getSecond().getCurrentSession().getConnection());
 		    } catch (StackOverflowError e) {
